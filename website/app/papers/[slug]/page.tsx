@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import papers from "../../data/papers.json";
 import { getPaperContent } from "../../lib/paperContent";
+import { renderMathInHtml } from "../../lib/renderMath";
 import PaperLayout from "../../components/PaperLayout";
 
 type Props = {
@@ -43,7 +44,7 @@ export default function PaperPage({ params }: Props) {
   const paper = papers[paperIndex];
   const prevPaper = paperIndex > 0 ? papers[paperIndex - 1] : null;
   const nextPaper = paperIndex < papers.length - 1 ? papers[paperIndex + 1] : null;
-  const htmlContent = getPaperContent(params.slug);
+  const htmlContent = renderMathInHtml(getPaperContent(params.slug));
 
   return (
     <PaperLayout
