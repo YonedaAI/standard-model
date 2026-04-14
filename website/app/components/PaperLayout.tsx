@@ -61,20 +61,26 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
     ) as HTMLElement[];
     if (!headings.length) return;
 
+    let ticking = false;
     const onScroll = () => {
-      const offset = 120; // pixels from top to consider "active"
-      let current = headings[0]?.id || "";
-      for (const h of headings) {
-        if (h.getBoundingClientRect().top <= offset) {
-          current = h.id;
-        } else {
-          break;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        // Find the last heading whose top edge has scrolled above 30% of viewport
+        const threshold = window.innerHeight * 0.3;
+        let current = "";
+        for (let i = headings.length - 1; i >= 0; i--) {
+          if (headings[i].getBoundingClientRect().top < threshold) {
+            current = headings[i].id;
+            break;
+          }
         }
-      }
-      setActiveId(current);
+        setActiveId(current);
+        ticking = false;
+      });
     };
 
-    onScroll(); // set initial state
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [htmlContent]);
