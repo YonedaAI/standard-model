@@ -56,24 +56,27 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
 
   useEffect(() => {
     if (!contentRef.current) return;
-    const headings = contentRef.current.querySelectorAll("h2[id], h3[id]");
+    const headings = Array.from(
+      contentRef.current.querySelectorAll("h2[id], h3[id]")
+    ) as HTMLElement[];
     if (!headings.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const intersecting = entries.filter(e => e.isIntersecting);
-        if (intersecting.length > 0) {
-          const topmost = intersecting.reduce((a, b) =>
-            a.boundingClientRect.top < b.boundingClientRect.top ? a : b
-          );
-          setActiveId(topmost.target.id);
+    const onScroll = () => {
+      const offset = 120; // pixels from top to consider "active"
+      let current = headings[0]?.id || "";
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top <= offset) {
+          current = h.id;
+        } else {
+          break;
         }
-      },
-      { rootMargin: "-20% 0% -60% 0%" }
-    );
+      }
+      setActiveId(current);
+    };
 
-    headings.forEach((h) => observer.observe(h));
-    return () => observer.disconnect();
+    onScroll(); // set initial state
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [htmlContent]);
 
   return (
