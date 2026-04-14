@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
 
 type Paper = {
   slug: string;
@@ -51,39 +50,42 @@ function extractTOC(html: string): TOCItem[] {
 export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }: Props) {
   const [tocOpen, setTocOpen] = useState(false);
   const [activeId, setActiveId] = useState<string>("");
-  const contentRef = useRef<HTMLDivElement>(null);
   const tocItems = extractTOC(htmlContent);
 
-  useEffect(() => {
-    if (!contentRef.current) return;
-    const headings = Array.from(
-      contentRef.current.querySelectorAll("h2[id], h3[id]")
-    ) as HTMLElement[];
-    if (!headings.length) return;
+  // Inject HTML content via ref callback to avoid React hydration issues
+  const contentCallbackRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      node.innerHTML = htmlContent;
+    }
+  }, [htmlContent]);
 
-    let ticking = false;
+  // Scroll spy using document.getElementById — works regardless of how content is injected
+  useEffect(() => {
+    if (!tocItems.length) return;
+
+    let rafId = 0;
     const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        // Find the last heading whose top edge has scrolled above 30% of viewport
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
         const threshold = window.innerHeight * 0.3;
         let current = "";
-        for (let i = headings.length - 1; i >= 0; i--) {
-          if (headings[i].getBoundingClientRect().top < threshold) {
-            current = headings[i].id;
-            break;
+        for (const item of tocItems) {
+          const el = document.getElementById(item.id);
+          if (el && el.getBoundingClientRect().top < threshold) {
+            current = item.id;
           }
         }
         setActiveId(current);
-        ticking = false;
       });
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [htmlContent]);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [tocItems]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -245,11 +247,8 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
             </div>
           </header>
 
-          <div
-            ref={contentRef}
-            className="paper-content"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }}
-          />
+          {/* Use ref callback to inject HTML directly — bypasses React hydration */}
+          <div ref={contentCallbackRef} className="paper-content" />
 
           <nav
             aria-label="Paper navigation"
