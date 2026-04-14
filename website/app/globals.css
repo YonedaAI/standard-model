@@ -1,0 +1,416 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface-hover: #1a1a2e;
+  --accent: #6c5ce7;
+  --accent-hover: #7c6cf7;
+  --text: #e4e4ef;
+  --text-muted: #8888a0;
+  --border: #2a2a3e;
+  --code-bg: #0d0d14;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Semantic color helpers */
+.text-main { color: var(--text); }
+.text-muted { color: var(--text-muted); }
+.text-accent-color { color: var(--accent-hover); }
+
+/* Hero background */
+.hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,92,231,0.12) 0%, transparent 70%);
+}
+
+/* Section background */
+.section-bg {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+
+/* Divider */
+.divider-v { background-color: var(--border); }
+
+/* Badge styles */
+.badge-accent {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  background-color: rgba(108,92,231,0.1);
+}
+
+.tag-accent {
+  background-color: rgba(108,92,231,0.12);
+  color: var(--accent-hover);
+}
+
+.tag-green {
+  background-color: rgba(42,138,94,0.12);
+  color: #4ade80;
+}
+
+/* Law cards */
+.law-card {
+  border-color: var(--border);
+  background-color: var(--surface-hover);
+}
+
+/* Part badge on cover image */
+.part-badge {
+  background-color: rgba(10,10,15,0.85);
+  color: var(--accent-hover);
+  backdrop-filter: blur(4px);
+}
+
+/* Cover image aspect ratio */
+.cover-aspect {
+  aspect-ratio: 16/9;
+  background-color: var(--surface-hover);
+}
+
+/* Paper card */
+.paper-card {
+  border-color: var(--border);
+  background-color: var(--surface);
+  transition: border-color 0.2s, background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.paper-card:hover {
+  border-color: var(--accent);
+  background-color: var(--surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(108,92,231,0.15);
+}
+
+/* Card buttons */
+.card-btn-primary {
+  background-color: var(--accent);
+  color: #fff;
+  transition: background-color 0.15s;
+}
+
+.card-btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.card-btn-secondary {
+  border-color: var(--border);
+  color: var(--text-muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.card-btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* Paper content styles */
+.paper-content {
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.paper-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.paper-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+}
+
+.paper-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.paper-content h4 {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+}
+
+.paper-content p {
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+
+.paper-content a {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.paper-content a:hover {
+  color: #a89df8;
+}
+
+.paper-content strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.paper-content em {
+  color: #c4c4d8;
+}
+
+.paper-content ul,
+.paper-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.75rem;
+}
+
+.paper-content ul {
+  list-style-type: disc;
+}
+
+.paper-content ol {
+  list-style-type: decimal;
+}
+
+.paper-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.7;
+}
+
+/* Code blocks */
+.paper-content pre {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.paper-content code {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.875em;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color: #a89df8;
+}
+
+.paper-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: #c4d4f0;
+}
+
+/* Math display */
+.paper-content .math,
+.paper-content .math-display {
+  overflow-x: auto;
+  padding: 0.25rem 0;
+}
+
+.paper-content .katex-display {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* Tables */
+.paper-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  display: block;
+}
+
+.paper-content thead {
+  background-color: var(--surface-hover);
+}
+
+.paper-content th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  white-space: nowrap;
+}
+
+.paper-content td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+
+.paper-content tr:nth-child(even) {
+  background-color: rgba(108, 92, 231, 0.04);
+}
+
+/* Theorem/Definition/Lemma environments */
+.paper-content .theorem,
+.paper-content .definition,
+.paper-content .lemma,
+.paper-content .proposition,
+.paper-content .corollary,
+.paper-content .remark,
+.paper-content .proof {
+  background-color: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.paper-content .remark {
+  border-left-color: var(--text-muted);
+}
+
+.paper-content .proof {
+  border-left-color: #2a8a5e;
+  background-color: rgba(42, 138, 94, 0.05);
+}
+
+/* Abstract block */
+.paper-abstract {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #c4c4d8;
+}
+
+/* Blockquote */
+.paper-content blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1.5rem 0;
+  padding: 0.5rem 1.25rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Figures */
+.paper-content figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.paper-content figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.paper-content img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* TOC */
+.toc-link {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.toc-link:hover,
+.toc-link.active {
+  color: var(--accent-hover);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Mobile table wrapper */
+@media (max-width: 640px) {
+  .paper-content table {
+    font-size: 0.8rem;
+  }
+
+  .paper-content th,
+  .paper-content td {
+    padding: 0.5rem 0.65rem;
+  }
+}
+
+/* Footer */
+.footer-bg {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+
+.footer-link {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent-hover);
+}
+
+.footer-bottom {
+  border-color: var(--border);
+}

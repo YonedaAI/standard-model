@@ -1,0 +1,1066 @@
+\documentclass[12pt]{article}
+
+% Core math
+\usepackage{amsmath, amssymb, amsthm}
+
+% Diagrams
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, decorations.pathmorphing, calc}
+
+% References
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Graphics
+\usepackage{graphicx}
+
+% Page layout
+\usepackage[margin=1in]{geometry}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{array}
+
+% GrokRxiv sidebar
+\usepackage{everypage}
+\usepackage{xcolor}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Custom commands
+\newcommand{\lag}{\mathcal{L}}
+\newcommand{\higgs}{\mathcal{H}}
+\newcommand{\su}[1]{\mathrm{SU}(#1)}
+\newcommand{\uu}[1]{\mathrm{U}(#1)}
+\newcommand{\tr}{\mathrm{Tr}}
+\newcommand{\vev}[1]{\langle #1 \rangle}
+\newcommand{\dmu}{D_\mu}
+\newcommand{\pmu}{\partial_\mu}
+\newcommand{\gmu}{\gamma^\mu}
+\newcommand{\Mpl}{M_{\mathrm{Pl}}}
+\newcommand{\sinw}{\sin^2\!\theta_W}
+\newcommand{\cosw}{\cos\theta_W}
+\newcommand{\tanw}{\tan\theta_W}
+
+% GrokRxiv DOI Sidebar
+\definecolor{grokgray}{RGB}{110,110,110}
+\AddEverypageHook{%
+  \ifnum\value{page}=1
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[
+        rotate=90,
+        anchor=south,
+        font=\Large\sffamily\bfseries\color{grokgray},
+        inner sep=0pt
+      ] at ([xshift=38pt, yshift=0.52\paperheight]current page.south west)
+      {GrokRxiv:2026.04.synthesis-to-standard-model\quad
+       [\,hep-ph\,]\quad
+       14 Apr 2026};
+    \end{tikzpicture}
+  \fi
+}
+
+\begin{document}
+
+\title{\textbf{Synthesis to the Standard Model: \\[6pt]
+Modular Composition of Gauge Symmetries, \\[4pt]
+Spontaneous Symmetry Breaking, and \\[4pt]
+Emergent Particle Physics}}
+
+\author{Matthew Long \\
+\textit{The YonedaAI Collaboration} \\
+\textit{YonedaAI Research Collective} \\
+Chicago, IL \\
+\texttt{matthew@yonedaai.com} $\cdot$ \url{https://yonedaai.com}}
+
+\date{April 14, 2026}
+
+\maketitle
+
+\begin{abstract}
+We present a comprehensive treatment of the Standard Model of particle physics from the perspective of modular composition. The Standard Model gauge group $\su{3}_C \times \su{2}_L \times \uu{1}_Y$ is developed as the composition of three independent gauge modules --- quantum chromodynamics, weak isospin, and hypercharge --- whose interplay produces emergent phenomena absent from any individual sector. Within our modular physics framework, we trace the hierarchical composition from Law~I (Size-Aware) through Law~II (Thermal), Law~III (Quantum), and identify Law~IV (Gravitational) as the open frontier. We derive the full Standard Model Lagrangian, including gauge, fermion, Higgs, and Yukawa sectors, and demonstrate how spontaneous symmetry breaking via the Higgs mechanism provides the compositional bridge between the gauge and matter modules. We prove that anomaly cancellation imposes necessary and sufficient constraints linking the quark and lepton content of each generation --- a deep emergent consistency condition. The renormalization group running of the three gauge couplings is analyzed as a compositional phenomenon, with implications for grand unification. We review precision experimental tests including the Higgs boson discovery ($m_H \approx 125.25$~GeV), electroweak precision observables, CP~violation in the CKM matrix, neutrino oscillations, and the baryon asymmetry of the universe. Open problems --- the hierarchy problem, the strong CP problem, neutrino mass mechanisms, dark matter, and the path to quantum gravity --- are discussed as frontiers where the modular framework must be extended. Accompanying Haskell code provides computational verification of key group-theoretic and renormalization group results.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%% =========================================================================
+\section{Introduction}
+\label{sec:introduction}
+%% =========================================================================
+
+The Standard Model of particle physics stands as one of the most precisely tested and conceptually deep theories in the history of science. It provides a unified description of the strong, weak, and electromagnetic forces through a single mathematical framework based on Yang--Mills gauge theory, spontaneous symmetry breaking, and the quantum field-theoretic treatment of matter.
+
+The central thesis of this paper is that the Standard Model is best understood not as a monolithic structure, but as a \emph{modular composition} of distinct components whose interaction produces emergent properties not present in any individual module. This perspective, rooted in the modular physics framework, organizes the compositional hierarchy as follows:
+
+\begin{itemize}
+\item \textbf{Law~I (Size-Aware)}: The Standard Model possesses characteristic scales --- the electroweak scale $v \approx 246$~GeV and the QCD scale $\Lambda_{\mathrm{QCD}} \approx 200$~MeV --- that govern the structure of matter at different size regimes.
+
+\item \textbf{Law~II (Thermal)}: Finite-temperature quantum field theory reveals the phase structure of the composed system: the QCD confinement--deconfinement crossover at $T_c \approx 155$~MeV, the electroweak symmetry restoration at $T \sim 100$~GeV, and the thermal non-equilibrium conditions required for baryogenesis.
+
+\item \textbf{Law~III (Quantum)}: The full gauge quantum field theory constitutes the quantum compositional law applied to internal symmetry structures. At this level, matter fields (quarks and leptons), antimatter (predicted by the Dirac equation), and gauge bosons compose into the renormalizable theory $\su{3}_C \times \su{2}_L \times \uu{1}_Y$.
+
+\item \textbf{Law~IV (Gravitational)}: The open frontier where the modular framework must be extended to incorporate general relativity and quantum gravity.
+\end{itemize}
+
+The synthesis we present in this paper is the \emph{key compositional step}: the assembly of the Standard Model from its modular pieces. The matter sector (Topic~1 in our framework) provides the fermion fields and their quantum numbers. The antimatter sector (Topic~2) emerges as a necessary consequence of relativistic quantum mechanics and furnishes the CPT symmetry, CP~violation, and the baryogenesis puzzle. The synthesis (this paper) shows how these compose with the gauge structure and the Higgs mechanism to produce the full Standard Model, with all its emergent properties.
+
+The paper is organized as follows. Section~\ref{sec:gauge-structure} develops the gauge group structure and its modular decomposition. Section~\ref{sec:electroweak} presents the Glashow--Weinberg--Salam electroweak unification. Section~\ref{sec:qcd} treats quantum chromodynamics as the strong-force module. Section~\ref{sec:ssb} provides a detailed treatment of spontaneous symmetry breaking and the Higgs mechanism. Section~\ref{sec:full-lagrangian} assembles the complete Standard Model Lagrangian. Section~\ref{sec:anomalies} proves anomaly cancellation as an emergent consistency condition. Section~\ref{sec:rge} analyzes the renormalization group as a compositional bridge across energy scales. Section~\ref{sec:precision} reviews precision tests and experimental status. Section~\ref{sec:open-problems} discusses open problems and the path to Law~IV. Section~\ref{sec:results} states the main formal results. Section~\ref{sec:discussion} provides a broader discussion, and Section~\ref{sec:conclusion} concludes.
+
+
+%% =========================================================================
+\section{Mathematical Framework: The Gauge Group Structure}
+\label{sec:gauge-structure}
+%% =========================================================================
+
+We begin by establishing the mathematical foundation of the Standard Model gauge theory.
+
+\begin{definition}[Standard Model Gauge Group]
+\label{def:sm-gauge-group}
+The Standard Model gauge group is the compact Lie group
+\begin{equation}
+\label{eq:gauge-group}
+G_{\mathrm{SM}} = \su{3}_C \times \su{2}_L \times \uu{1}_Y,
+\end{equation}
+where:
+\begin{itemize}
+\item $\su{3}_C$ is the color gauge group with $\dim \su{3} = 8$ generators $T^a = \lambda^a/2$, $a = 1, \ldots, 8$, where $\lambda^a$ are the Gell-Mann matrices satisfying $[T^a, T^b] = i f^{abc} T^c$;
+\item $\su{2}_L$ is the weak isospin gauge group with $\dim \su{2} = 3$ generators $\tau^i = \sigma^i/2$, $i = 1, 2, 3$, where $\sigma^i$ are the Pauli matrices, acting only on left-handed fermion fields;
+\item $\uu{1}_Y$ is the weak hypercharge gauge group with a single generator $Y$.
+\end{itemize}
+\end{definition}
+
+The subscripts carry physical meaning: $C$ denotes \emph{color}, the quantum number of the strong force; $L$ denotes \emph{left-handed}, reflecting the maximal parity violation of weak interactions; and $Y$ denotes weak \emph{hypercharge}, related to electric charge by the Gell-Mann--Nishijima relation.
+
+\begin{definition}[Gell-Mann--Nishijima Relation]
+\label{def:gmn}
+The electric charge operator $Q$ is
+\begin{equation}
+\label{eq:gmn}
+Q = T^3 + Y,
+\end{equation}
+where $T^3$ is the third component of weak isospin and $Y$ is the weak hypercharge.
+\end{definition}
+
+\subsection{Modular Decomposition of the Gauge Group}
+
+The direct product structure of $G_{\mathrm{SM}}$ is the mathematical expression of modular composition. Each factor is an independent gauge module:
+
+\begin{enumerate}
+\item The \textbf{QCD module} $\su{3}_C$ governs strong interactions. Its gauge bosons are the 8~gluons $G^a_\mu$, and its coupling constant is $g_s$ (equivalently $\alpha_s = g_s^2/4\pi$).
+
+\item The \textbf{Weak isospin module} $\su{2}_L$ governs weak charged-current and part of neutral-current interactions. Its gauge bosons are $W^i_\mu$, $i = 1, 2, 3$, and its coupling constant is $g$.
+
+\item The \textbf{Hypercharge module} $\uu{1}_Y$ governs the remaining part of neutral-current and electromagnetic interactions. Its gauge boson is $B_\mu$, and its coupling constant is $g'$.
+\end{enumerate}
+
+\begin{proposition}[Gauge Boson Counting]
+\label{prop:boson-count}
+The Standard Model contains exactly $8 + 3 + 1 = 12$ gauge bosons before symmetry breaking. After electroweak symmetry breaking $\su{2}_L \times \uu{1}_Y \to \uu{1}_{\mathrm{em}}$, the physical gauge bosons are: 8~massless gluons, $W^\pm$ (massive), $Z^0$ (massive), and $\gamma$ (massless), for a total of 12 physical gauge bosons.
+\end{proposition}
+
+\begin{proof}
+The number of gauge bosons equals the dimension of the Lie algebra $\mathfrak{g}_{\mathrm{SM}} = \mathfrak{su}(3) \oplus \mathfrak{su}(2) \oplus \mathfrak{u}(1)$. For $\su{N}$, $\dim \mathfrak{su}(N) = N^2 - 1$; for $\uu{1}$, $\dim \mathfrak{u}(1) = 1$. Thus the total dimension is $(9-1) + (4-1) + 1 = 12$. Electroweak symmetry breaking mixes $W^3_\mu$ and $B_\mu$ into $Z_\mu$ and $A_\mu$ (the photon), and forms $W^\pm_\mu = (W^1_\mu \mp i W^2_\mu)/\sqrt{2}$. The total number of physical degrees of freedom is preserved: 12 gauge bosons with the appropriate massive/massless polarization states.
+\end{proof}
+
+\subsection{Fermion Representations}
+
+The matter content of the Standard Model is specified by the representations of $G_{\mathrm{SM}}$ under which the fermion fields transform. These representations are the input data that define how the matter module composes with the gauge module.
+
+\begin{definition}[Standard Model Fermion and Scalar Representations]
+\label{def:fermion-reps}
+For each generation $i = 1, 2, 3$, the fermion fields and their quantum numbers under $(\su{3}_C, \su{2}_L, \uu{1}_Y)$ are:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Field} & $\su{3}_C$ & $\su{2}_L$ & $\uu{1}_Y$ & \textbf{Components} \\
+\midrule
+$Q_L^i = \begin{pmatrix} u_L \\ d_L \end{pmatrix}^i$ & $\mathbf{3}$ & $\mathbf{2}$ & $+\tfrac{1}{6}$ & Left-handed quark doublet \\[8pt]
+$u_R^i$ & $\mathbf{3}$ & $\mathbf{1}$ & $+\tfrac{2}{3}$ & Right-handed up-type quark \\
+$d_R^i$ & $\mathbf{3}$ & $\mathbf{1}$ & $-\tfrac{1}{3}$ & Right-handed down-type quark \\[4pt]
+$L_L^i = \begin{pmatrix} \nu_L \\ e_L \end{pmatrix}^i$ & $\mathbf{1}$ & $\mathbf{2}$ & $-\tfrac{1}{2}$ & Left-handed lepton doublet \\[8pt]
+$e_R^i$ & $\mathbf{1}$ & $\mathbf{1}$ & $-1$ & Right-handed charged lepton \\[4pt]
+\midrule
+\multicolumn{5}{l}{\textit{Scalar sector:}} \\[2pt]
+$H = \begin{pmatrix} H^+ \\ H^0 \end{pmatrix}$ & $\mathbf{1}$ & $\mathbf{2}$ & $+\tfrac{1}{2}$ & Higgs doublet (spin-0) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{remark}
+The absence of right-handed neutrinos ($\nu_R$) from the minimal Standard Model is a deliberate choice. Neutrino oscillation experiments demonstrate that neutrinos have nonzero masses, which requires extending the minimal model. The seesaw mechanism introduces heavy right-handed neutrinos $N_R \sim (\mathbf{1}, \mathbf{1}, 0)$, providing a modular extension at the frontier between Law~III and Law~IV.
+\end{remark}
+
+\subsection{Covariant Derivative: The Composition Operator}
+
+The covariant derivative is the mathematical operator that \emph{composes} the gauge modules with the matter fields. It encodes all gauge interactions in a single expression.
+
+\begin{definition}[Standard Model Covariant Derivative]
+\label{def:covariant-derivative}
+The covariant derivative acting on a field $\psi$ with quantum numbers $(\mathbf{R}_3, \mathbf{R}_2, Y)$ is:
+\begin{equation}
+\label{eq:covariant-derivative}
+\dmu = \pmu - i g_s T^a G^a_\mu - i g \frac{\sigma^i}{2} W^i_\mu - i g' Y B_\mu,
+\end{equation}
+where $T^a$ are the $\su{3}_C$ generators in representation $\mathbf{R}_3$, $\sigma^i/2$ are the $\su{2}_L$ generators in representation $\mathbf{R}_2$ (vanishing for singlets), and $Y$ is the hypercharge eigenvalue. The gauge fields are:
+\begin{itemize}
+\item $G^a_\mu$: 8 gluon fields ($a = 1, \ldots, 8$),
+\item $W^i_\mu$: 3 weak isospin fields ($i = 1, 2, 3$),
+\item $B_\mu$: 1 hypercharge field.
+\end{itemize}
+\end{definition}
+
+The covariant derivative is the key compositional object: it is a sum over the three independent gauge modules, each contributing its generators, coupling constant, and gauge field. The modularity is manifest --- each term can be studied independently, and their composition is additive.
+
+\subsection{Field Strength Tensors}
+
+Each gauge module produces its own field strength tensor.
+
+\begin{definition}[Field Strength Tensors]
+\label{def:field-strengths}
+The field strength tensors for the three gauge modules are:
+\begin{align}
+G^a_{\mu\nu} &= \pmu G^a_\nu - \partial_\nu G^a_\mu + g_s f^{abc} G^b_\mu G^c_\nu, \label{eq:gluon-fst} \\
+W^i_{\mu\nu} &= \pmu W^i_\nu - \partial_\nu W^i_\mu + g \epsilon^{ijk} W^j_\mu W^k_\nu, \label{eq:w-fst} \\
+B_{\mu\nu} &= \pmu B_\nu - \partial_\nu B_\mu, \label{eq:b-fst}
+\end{align}
+where $f^{abc}$ are the $\su{3}$ structure constants and $\epsilon^{ijk}$ is the Levi-Civita symbol (the $\su{2}$ structure constant).
+\end{definition}
+
+\begin{remark}
+The non-Abelian field strength tensors~\eqref{eq:gluon-fst} and~\eqref{eq:w-fst} contain cubic terms in the gauge fields, leading to gauge boson self-interactions. These self-interactions are the origin of asymptotic freedom in QCD and are absent in the Abelian $\uu{1}_Y$ sector~\eqref{eq:b-fst}. This distinction is a consequence of the modular structure: non-Abelian modules produce qualitatively different emergent dynamics than Abelian modules.
+\end{remark}
+
+
+%% =========================================================================
+\section{Electroweak Unification: The Glashow--Weinberg--Salam Model}
+\label{sec:electroweak}
+%% =========================================================================
+
+The electroweak sector of the Standard Model, developed by Glashow~(1961), Weinberg~(1967), and Salam~(1968), demonstrates a key compositional principle: two distinct gauge modules ($\su{2}_L$ and $\uu{1}_Y$) compose with the Higgs module to produce a unified description of electromagnetic and weak phenomena.
+
+\subsection{The Weinberg Angle and Gauge Boson Mixing}
+
+After spontaneous symmetry breaking (detailed in Section~\ref{sec:ssb}), the neutral gauge bosons $W^3_\mu$ and $B_\mu$ mix to form the physical photon and $Z$ boson:
+
+\begin{definition}[Weinberg Angle]
+\label{def:weinberg-angle}
+The weak mixing angle $\theta_W$ is defined by
+\begin{equation}
+\label{eq:weinberg-angle}
+\tan\theta_W = \frac{g'}{g}, \qquad \sinw \approx 0.2312.
+\end{equation}
+\end{definition}
+
+The physical neutral gauge bosons are obtained by the orthogonal rotation:
+\begin{align}
+Z_\mu &= \cosw \, W^3_\mu - \sin\theta_W \, B_\mu, \label{eq:z-boson} \\
+A_\mu &= \sin\theta_W \, W^3_\mu + \cosw \, B_\mu, \label{eq:photon}
+\end{align}
+and the charged $W$ bosons are:
+\begin{equation}
+\label{eq:w-pm}
+W^\pm_\mu = \frac{1}{\sqrt{2}} \left( W^1_\mu \mp i W^2_\mu \right).
+\end{equation}
+
+\begin{proposition}[Electromagnetic Coupling]
+\label{prop:em-coupling}
+The electromagnetic coupling constant $e$ is related to $g$ and $g'$ by
+\begin{equation}
+\label{eq:em-coupling}
+e = g \sin\theta_W = g' \cosw = \frac{g g'}{\sqrt{g^2 + g'^2}}.
+\end{equation}
+The fine structure constant is $\alpha = e^2/(4\pi) \approx 1/137.036$.
+\end{proposition}
+
+\begin{proof}
+The photon field $A_\mu$ must couple to the electric charge $Q = T^3 + Y$ with coupling $e$. Substituting the rotation~\eqref{eq:z-boson}--\eqref{eq:photon} into the covariant derivative and identifying the coefficient of $Q A_\mu$ yields $e = g \sin\theta_W = g' \cosw$.
+\end{proof}
+
+\subsection{Gauge Boson Masses}
+
+The Higgs mechanism (Section~\ref{sec:ssb}) gives masses to the $W$ and $Z$ bosons:
+\begin{align}
+m_W &= \frac{g v}{2} \approx 80.4~\text{GeV}, \label{eq:mw} \\
+m_Z &= \frac{m_W}{\cosw} = \frac{v}{2}\sqrt{g^2 + g'^2} \approx 91.2~\text{GeV}, \label{eq:mz} \\
+m_\gamma &= 0, \label{eq:mphoton}
+\end{align}
+where $v \approx 246$~GeV is the Higgs vacuum expectation value.
+
+\begin{theorem}[Custodial Symmetry and the $\rho$~Parameter]
+\label{thm:rho-parameter}
+At tree level, the ratio
+\begin{equation}
+\label{eq:rho}
+\rho \equiv \frac{m_W^2}{m_Z^2 \cos^2\!\theta_W} = 1
+\end{equation}
+is a consequence of the custodial $\su{2}_V$ symmetry of the Higgs sector (the global symmetry $\mathrm{SO}(4) \cong \su{2}_L \times \su{2}_R$ broken to the diagonal $\su{2}_V$). Radiative corrections modify this:
+\begin{equation}
+\label{eq:delta-rho}
+\Delta\rho \approx \frac{3 G_F}{8\pi^2 \sqrt{2}} m_t^2 \approx 0.0095.
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The Higgs potential $V(H)$ depends only on $|H|^2 = H^\dagger H$, which is invariant under a global $\mathrm{O}(4)$ symmetry when the gauge couplings are turned off. The vacuum $\vev{H} = (0, v/\sqrt{2})^T$ breaks $\mathrm{O}(4) \to \mathrm{O}(3) \cong \su{2}_V$. This custodial symmetry ensures that the $W^{1,2,3}$ bosons receive equal mass contributions from the Higgs VEV, yielding $\rho = 1$ at tree level. The top quark Yukawa coupling $y_t \sim 1$ breaks custodial symmetry (since $m_t \gg m_b$), generating the leading radiative correction~\eqref{eq:delta-rho}.
+\end{proof}
+
+\subsection{The Fermi Theory as an Emergent Low-Energy Limit}
+
+At energies $E \ll m_W$, the $W$~boson propagator reduces to a contact interaction, yielding Fermi's effective theory:
+\begin{equation}
+\label{eq:fermi}
+\lag_{\mathrm{Fermi}} = -\frac{G_F}{\sqrt{2}} J^{\mu\dagger} J_\mu, \qquad \frac{G_F}{\sqrt{2}} = \frac{g^2}{8 m_W^2} \approx 1.166 \times 10^{-5}~\text{GeV}^{-2}.
+\end{equation}
+
+\begin{remark}
+The emergence of Fermi's theory from the full electroweak Standard Model is a paradigmatic example of compositional emergence: the low-energy effective description arises from integrating out the heavy $W$~boson, which is itself a product of the composition of the gauge and Higgs modules. This illustrates the Law~I (Size-Aware) aspect of the modular framework --- different compositional scales reveal different effective physics.
+\end{remark}
+
+
+%% =========================================================================
+\section{Quantum Chromodynamics: The Strong Force Module}
+\label{sec:qcd}
+%% =========================================================================
+
+Quantum chromodynamics (QCD) is the $\su{3}_C$ gauge theory describing the strong interaction. It is the most computationally challenging and phenomenologically rich module of the Standard Model.
+
+\subsection{The QCD Lagrangian}
+
+\begin{definition}[QCD Lagrangian]
+\label{def:qcd-lag}
+The QCD Lagrangian is
+\begin{equation}
+\label{eq:qcd-lag}
+\lag_{\mathrm{QCD}} = \sum_{q} \bar{\psi}_q \left( i \gmu \dmu - m_q \right) \psi_q - \frac{1}{4} G^a_{\mu\nu} G_a^{\mu\nu},
+\end{equation}
+where the sum is over quark flavors $q \in \{u, d, c, s, t, b\}$, $\dmu = \pmu - i g_s T^a G^a_\mu$ is the QCD covariant derivative, and $G^a_{\mu\nu}$ is the gluon field strength~\eqref{eq:gluon-fst}.
+\end{definition}
+
+\subsection{Asymptotic Freedom}
+
+The most remarkable emergent property of the QCD module is asymptotic freedom: the coupling $\alpha_s(\mu)$ decreases at high energies (short distances).
+
+\begin{theorem}[Asymptotic Freedom --- Gross, Politzer, Wilczek, 1973]
+\label{thm:asymptotic-freedom}
+The one-loop beta function of $\su{N_c}$ gauge theory with $N_f$ quark flavors in the fundamental representation is
+\begin{equation}
+\label{eq:qcd-beta}
+\beta(g_s) = \mu \frac{dg_s}{d\mu} = -\frac{g_s^3}{16\pi^2} \left( \frac{11 N_c}{3} - \frac{2 N_f}{3} \right).
+\end{equation}
+For $N_c = 3$ and $N_f \leq 16$, $\beta < 0$, so the coupling decreases with increasing energy.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The one-loop contribution to the gluon self-energy consists of three diagrams: the gluon loop (from the cubic and quartic self-interaction vertices), the ghost loop, and the quark loop. The gluon and ghost contributions yield $+11N_c/3$ (antiscreening), while the quark loop yields $-2N_f/3$ (screening, analogous to QED). For $N_c = 3$ and $N_f = 6$, $b_0 = 11 - 2 \cdot 6/3 = 7 > 0$, confirming asymptotic freedom.
+\end{proof}
+
+The running coupling at one loop is:
+\begin{equation}
+\label{eq:running-alphas}
+\alpha_s(\mu) = \frac{\alpha_s(\mu_0)}{1 + \frac{b_0}{2\pi} \alpha_s(\mu_0) \ln(\mu/\mu_0)},
+\end{equation}
+with the experimental value at the $Z$~mass scale:
+\begin{equation}
+\alpha_s(m_Z) \approx 0.1180 \pm 0.0009.
+\end{equation}
+
+\subsection{Confinement and the Mass Gap}
+
+At low energies, QCD exhibits confinement: quarks and gluons are bound into color-neutral hadrons. The potential between a quark--antiquark pair at large separation grows linearly:
+\begin{equation}
+\label{eq:linear-potential}
+V(r) \sim \sigma r, \qquad \sigma \approx 0.18~\text{GeV}^2 \approx (440~\text{MeV})^2,
+\end{equation}
+where $\sigma$ is the string tension. This has been verified by lattice QCD simulations but remains mathematically unproven.
+
+\begin{remark}
+The mathematical proof of confinement and the existence of a mass gap in $\su{3}$ Yang--Mills theory is one of the Clay Mathematics Institute Millennium Prize Problems. From the modular perspective, confinement is an emergent property of the non-Abelian gauge module that has no analogue in the Abelian $\uu{1}$ sector.
+\end{remark}
+
+\subsection{Chiral Symmetry Breaking}
+
+In the limit of massless light quarks ($m_u, m_d \to 0$), the QCD Lagrangian possesses an approximate chiral symmetry:
+\begin{equation}
+\su{2}_L \times \su{2}_R \xrightarrow{\text{SSB}} \su{2}_V,
+\end{equation}
+spontaneously broken by the quark condensate $\vev{\bar{\psi}\psi} \neq 0$. The three pions $(\pi^\pm, \pi^0)$ are the pseudo-Goldstone bosons of this breaking, with masses $m_\pi \ll \Lambda_{\mathrm{QCD}}$.
+
+\begin{proposition}[Emergent Mass of Hadronic Matter]
+\label{prop:hadron-mass}
+Approximately 99\% of the mass of visible baryonic matter (protons, neutrons) arises from QCD binding energy, not from the Higgs-generated quark masses. Specifically:
+\begin{equation}
+m_p \approx 938~\text{MeV}, \qquad m_u + m_d + m_u \approx 9~\text{MeV}.
+\end{equation}
+The dominant contribution comes from the chromodynamic self-energy of the gluon field and the kinetic energy of confined quarks, as computed by lattice QCD.
+\end{proposition}
+
+\begin{remark}
+This is a profound emergent property of modular composition: the composition of quark matter fields with the $\su{3}_C$ gauge module at Law~III generates approximately 99\% of the mass of ordinary matter. The Higgs mechanism contributes only the small bare quark masses; the dominant mass is dynamically generated by the strong interaction module.
+\end{remark}
+
+
+%% =========================================================================
+\section{Spontaneous Symmetry Breaking and the Higgs Mechanism}
+\label{sec:ssb}
+%% =========================================================================
+
+Spontaneous symmetry breaking (SSB) is the compositional mechanism that connects the gauge module to the mass spectrum of observed particles. The Higgs mechanism is the specific implementation of SSB in a gauge theory.
+
+\subsection{The Goldstone Theorem}
+
+\begin{theorem}[Goldstone Theorem --- Goldstone, Salam, Weinberg, 1962]
+\label{thm:goldstone}
+If a continuous global symmetry group $G$ of a quantum field theory is spontaneously broken to a subgroup $H \subset G$, then there exist $\dim G - \dim H$ massless scalar particles (Nambu--Goldstone bosons).
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Let $\phi$ be a scalar field with potential $V(\phi)$ invariant under $G$. If the vacuum state $\vev{\phi} = v$ breaks $G$ to $H$, then the broken generators $T^a$ ($a = 1, \ldots, \dim G - \dim H$) satisfy $T^a v \neq 0$. Expanding $V$ around $v$, the mass matrix $\mathcal{M}^2_{ab} = \partial^2 V/\partial\phi_a \partial\phi_b|_v$ satisfies $\mathcal{M}^2 (T^a v) = 0$ by the $G$-invariance of $V$. Thus each $T^a v$ is a zero eigenvector of $\mathcal{M}^2$, corresponding to a massless mode.
+\end{proof}
+
+\subsection{The Higgs Mechanism: Eating the Goldstone Bosons}
+
+When the broken symmetry is a \emph{local} (gauge) symmetry, the Goldstone bosons are absorbed by the gauge bosons, giving them mass. This is the Higgs mechanism, discovered independently by Higgs~(1964), Brout--Englert~(1964), and Guralnik--Hagen--Kibble~(1964).
+
+\begin{definition}[Higgs Potential]
+\label{def:higgs-potential}
+The Higgs doublet $H \sim (\mathbf{1}, \mathbf{2}, +1/2)$ has the gauge-invariant potential
+\begin{equation}
+\label{eq:higgs-potential}
+V(H) = -\mu^2 |H|^2 + \lambda |H|^4, \qquad \mu^2 > 0, \quad \lambda > 0,
+\end{equation}
+which has the ``Mexican hat'' profile with a degenerate circle of minima at
+\begin{equation}
+\label{eq:higgs-vev}
+|H| = \frac{v}{\sqrt{2}}, \qquad v = \sqrt{\frac{\mu^2}{\lambda}} \approx 246~\text{GeV}.
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Electroweak Symmetry Breaking Pattern]
+\label{thm:ewsb}
+The vacuum expectation value
+\begin{equation}
+\label{eq:higgs-vev-explicit}
+\vev{H} = \frac{1}{\sqrt{2}} \begin{pmatrix} 0 \\ v \end{pmatrix}
+\end{equation}
+breaks the electroweak symmetry as:
+\begin{equation}
+\su{2}_L \times \uu{1}_Y \xrightarrow{\vev{H}} \uu{1}_{\mathrm{em}}.
+\end{equation}
+Three of the four generators of $\su{2}_L \times \uu{1}_Y$ are broken; the unbroken generator is $Q = T^3 + Y$, corresponding to the electromagnetic $\uu{1}_{\mathrm{em}}$.
+\end{theorem}
+
+\begin{proof}
+The VEV~\eqref{eq:higgs-vev-explicit} satisfies $Q \vev{H} = (T^3 + Y) \vev{H} = (-1/2 + 1/2) \vev{H} \cdot (0, 1)^T = 0$ for the lower component. The generators $T^1, T^2$, and $(T^3 - Y)$ do not annihilate $\vev{H}$, so they are broken. Thus 3~generators are broken and 1~remains, giving $\su{2}_L \times \uu{1}_Y \to \uu{1}_{\mathrm{em}}$.
+\end{proof}
+
+\subsection{Degree-of-Freedom Counting}
+
+\begin{proposition}[Higgs Degree-of-Freedom Counting]
+\label{prop:dof-counting}
+The Higgs doublet $H$ has 4 real degrees of freedom (2 complex components). After SSB:
+\begin{itemize}
+\item 3 would-be Goldstone bosons are eaten by $W^+, W^-, Z$, providing their longitudinal polarization modes;
+\item 1 physical Higgs boson $h$ remains, with mass
+\begin{equation}
+m_h = \sqrt{2\mu^2} = \sqrt{2\lambda}\, v \approx 125.25~\text{GeV}.
+\end{equation}
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+The Higgs doublet in unitary gauge is parametrized as
+\begin{equation}
+H = \frac{1}{\sqrt{2}} \begin{pmatrix} 0 \\ v + h(x) \end{pmatrix},
+\end{equation}
+where $h(x)$ is the physical Higgs field. The 3~Goldstone modes are gauged away (unitary gauge), and their degrees of freedom appear as the longitudinal polarizations of $W^\pm$ and $Z$. This is verified by counting: before SSB, there are 4~scalar + 3 massless $\su{2}_L$ gauge bosons (2 polarizations each) + 1 massless $\uu{1}_Y$ gauge boson (2 polarizations) $= 4 + 6 + 2 = 12$ degrees of freedom. After SSB: 1~scalar + 3 massive gauge bosons (3 polarizations each) + 1 massless photon (2 polarizations) $= 1 + 9 + 2 = 12$. The count is preserved.
+\end{proof}
+
+
+%% =========================================================================
+\section{The Full Standard Model Lagrangian}
+\label{sec:full-lagrangian}
+%% =========================================================================
+
+The complete Standard Model Lagrangian is the composition of four modular sectors:
+\begin{equation}
+\label{eq:full-lagrangian}
+\lag_{\mathrm{SM}} = \lag_{\mathrm{gauge}} + \lag_{\mathrm{fermion}} + \lag_{\mathrm{Higgs}} + \lag_{\mathrm{Yukawa}}.
+\end{equation}
+
+We now present each sector in detail, emphasizing how the full theory emerges from composing these independent modules.
+
+\subsection{Gauge Sector}
+
+\begin{definition}[Gauge Kinetic Lagrangian]
+\label{def:gauge-lagrangian}
+\begin{equation}
+\label{eq:gauge-lagrangian}
+\lag_{\mathrm{gauge}} = -\frac{1}{4} G^a_{\mu\nu} G_a^{\mu\nu} - \frac{1}{4} W^i_{\mu\nu} W_i^{\mu\nu} - \frac{1}{4} B_{\mu\nu} B^{\mu\nu}.
+\end{equation}
+This is the sum of three independent Yang--Mills Lagrangians, one for each gauge module. The non-Abelian field strengths~\eqref{eq:gluon-fst}--\eqref{eq:w-fst} contain self-interaction terms that produce cubic ($GGG$, $WWW$) and quartic ($GGGG$, $WWWW$) gauge boson vertices.
+\end{definition}
+
+\subsection{Fermion Sector}
+
+\begin{definition}[Fermion Kinetic Lagrangian]
+\label{def:fermion-lagrangian}
+\begin{equation}
+\label{eq:fermion-lagrangian}
+\lag_{\mathrm{fermion}} = \sum_{i=1}^{3} \left[ i \bar{Q}_L^i \gmu \dmu Q_L^i + i \bar{u}_R^i \gmu \dmu u_R^i + i \bar{d}_R^i \gmu \dmu d_R^i + i \bar{L}_L^i \gmu \dmu L_L^i + i \bar{e}_R^i \gmu \dmu e_R^i \right],
+\end{equation}
+where the covariant derivative $\dmu$ is given by~\eqref{eq:covariant-derivative} with the appropriate representation for each field.
+\end{definition}
+
+\begin{remark}
+The fermion Lagrangian~\eqref{eq:fermion-lagrangian} is the compositional bridge between the matter module and the gauge module. Each fermion field transforms under specific representations of $G_{\mathrm{SM}}$ (cf.\ Definition~\ref{def:fermion-reps}), and the covariant derivative~\eqref{eq:covariant-derivative} composes these representations with the gauge fields. The absence of bare fermion mass terms $m \bar{\psi}\psi$ is enforced by gauge invariance: such terms would mix left- and right-handed fields with different $\su{2}_L$ quantum numbers, breaking the gauge symmetry. Fermion masses must therefore arise from composition with the Higgs module (Yukawa sector).
+\end{remark}
+
+\subsection{Higgs Sector}
+
+\begin{definition}[Higgs Lagrangian]
+\label{def:higgs-lagrangian}
+\begin{equation}
+\label{eq:higgs-lagrangian}
+\lag_{\mathrm{Higgs}} = (\dmu H)^\dagger (\dmu H) - V(H) = (\dmu H)^\dagger (\dmu H) + \mu^2 |H|^2 - \lambda |H|^4.
+\end{equation}
+After spontaneous symmetry breaking, expanding $H = (0, (v+h)/\sqrt{2})^T$ in unitary gauge:
+\begin{equation}
+\lag_{\mathrm{Higgs}} = \frac{1}{2}(\pmu h)^2 - \frac{1}{2} m_h^2 h^2 - \lambda v h^3 - \frac{\lambda}{4} h^4 + m_W^2 W^{+\mu} W^-_\mu \left(1 + \frac{h}{v}\right)^2 + \frac{1}{2} m_Z^2 Z^\mu Z_\mu \left(1 + \frac{h}{v}\right)^2.
+\end{equation}
+\end{definition}
+
+The Higgs self-couplings are:
+\begin{align}
+\lambda_{hhh} &= \frac{3 m_h^2}{v} \approx 191~\text{GeV}, \label{eq:cubic-higgs} \\
+\lambda_{hhhh} &= \frac{3 m_h^2}{v^2} \approx 0.78. \label{eq:quartic-higgs}
+\end{align}
+
+\begin{remark}
+The cubic Higgs self-coupling $\lambda_{hhh}$ is currently being measured at the LHC through di-Higgs production. Its precise determination is essential for verifying the shape of the Higgs potential and understanding the nature of the electroweak phase transition in the early universe (a Law~II phenomenon that is sensitive to the Law~III compositional structure).
+\end{remark}
+
+\subsection{Yukawa Sector: Composing Matter with the Higgs}
+
+\begin{definition}[Yukawa Lagrangian]
+\label{def:yukawa-lagrangian}
+\begin{equation}
+\label{eq:yukawa-lagrangian}
+\lag_{\mathrm{Yukawa}} = -Y_u^{ij} \bar{Q}_L^i \tilde{H} u_R^j - Y_d^{ij} \bar{Q}_L^i H d_R^j - Y_e^{ij} \bar{L}_L^i H e_R^j + \text{h.c.},
+\end{equation}
+where $\tilde{H} = i\sigma_2 H^*$ is the charge-conjugate Higgs doublet, and $Y_u, Y_d, Y_e$ are $3 \times 3$ complex Yukawa coupling matrices in generation space.
+\end{definition}
+
+After electroweak symmetry breaking, the Yukawa couplings generate fermion mass matrices:
+\begin{equation}
+\label{eq:fermion-masses}
+(M_f)_{ij} = \frac{v}{\sqrt{2}} (Y_f)_{ij}, \qquad f \in \{u, d, e\}.
+\end{equation}
+
+The mass matrices are diagonalized by biunitary transformations:
+\begin{equation}
+M_f^{\text{diag}} = V_{fL}^\dagger M_f V_{fR},
+\end{equation}
+yielding the physical fermion masses. In the quark sector, the mismatch between the diagonalization of $M_u$ and $M_d$ produces the CKM matrix.
+
+\begin{definition}[CKM Matrix]
+\label{def:ckm}
+The Cabibbo--Kobayashi--Maskawa (CKM) quark mixing matrix is
+\begin{equation}
+\label{eq:ckm}
+V_{\mathrm{CKM}} = V_{uL}^\dagger V_{dL},
+\end{equation}
+a $3 \times 3$ unitary matrix relating quark mass eigenstates to weak interaction eigenstates. In the Wolfenstein parametrization:
+\begin{equation}
+\label{eq:wolfenstein}
+V_{\mathrm{CKM}} \approx \begin{pmatrix}
+1 - \lambda^2/2 & \lambda & A\lambda^3(\rho - i\eta) \\
+-\lambda & 1 - \lambda^2/2 & A\lambda^2 \\
+A\lambda^3(1 - \rho - i\eta) & -A\lambda^2 & 1
+\end{pmatrix},
+\end{equation}
+with $\lambda \approx 0.225$, $A \approx 0.82$, $\rho \approx 0.14$, $\eta \approx 0.36$.
+\end{definition}
+
+\begin{theorem}[CP Violation Requires Three Generations --- Kobayashi--Maskawa, 1973]
+\label{thm:cp-violation-ckm}
+CP violation in the Standard Model via the CKM mechanism is possible if and only if there are at least three generations of quarks. With $n$ generations, the CKM matrix has $(n-1)(n-2)/2$ independent CP-violating phases.
+\end{theorem}
+
+\begin{proof}
+A $n \times n$ unitary matrix has $n^2$ real parameters. Rephasing the $2n$ quark fields ($n$~up-type and $n$~down-type) removes $2n - 1$ phases (one overall phase is unphysical). The remaining parameters split into $n(n-1)/2$ mixing angles and $(n-1)(n-2)/2$ CP-violating phases. For $n = 2$: $(2-1)(2-2)/2 = 0$ phases --- no CP violation (the Cabibbo angle alone). For $n = 3$: $(3-1)(3-2)/2 = 1$ phase --- exactly one CP-violating phase $\delta$, the Kobayashi--Maskawa phase.
+\end{proof}
+
+\begin{remark}
+The existence of exactly one CP-violating phase in the CKM matrix, combined with the Sakharov conditions, provides a mechanism (albeit quantitatively insufficient) for generating the baryon asymmetry of the universe. This connects the Yukawa compositional module (matter + Higgs) to the thermodynamic history of the universe (Law~II), demonstrating the cross-law compositional structure.
+\end{remark}
+
+
+%% =========================================================================
+\section{Anomaly Cancellation: Emergent Consistency}
+\label{sec:anomalies}
+%% =========================================================================
+
+One of the most remarkable emergent properties of the Standard Model is the cancellation of gauge anomalies. An anomaly occurs when a classical symmetry is broken by quantum effects (loop diagrams), potentially rendering the theory inconsistent (non-unitary or non-renormalizable).
+
+\begin{definition}[Gauge Anomaly]
+\label{def:anomaly}
+A gauge anomaly arises when the divergence of a gauge current receives a quantum correction:
+\begin{equation}
+\partial_\mu J^{a\mu} = \frac{1}{16\pi^2} \epsilon^{\mu\nu\rho\sigma} \tr\left[ T^a \{T^b, T^c\} \right] F^b_{\mu\nu} F^c_{\rho\sigma},
+\end{equation}
+where the anomaly coefficient is
+\begin{equation}
+\label{eq:anomaly-coefficient}
+\mathcal{A}^{abc} = \tr\left[ T^a \{T^b, T^c\} \right],
+\end{equation}
+with the trace taken over all fermion representations.
+\end{definition}
+
+\begin{theorem}[Anomaly Cancellation in the Standard Model]
+\label{thm:anomaly-cancellation}
+All gauge anomalies of the Standard Model cancel generation by generation. The relevant anomaly conditions are:
+\begin{enumerate}
+\item $[\su{3}_C]^2 \uu{1}_Y$: $\sum_{\text{quarks}} Y = 2 \cdot \frac{1}{6} + \frac{2}{3} + (-\frac{1}{3}) = 0$ per generation.
+\item $[\su{2}_L]^2 \uu{1}_Y$: $\sum_{\text{doublets}} Y = 3 \cdot \frac{1}{6} + (-\frac{1}{2}) = 0$ per generation (factor of 3 for color).
+\item $[\uu{1}_Y]^3$: $\sum_{\text{all fermions}} Y^3 = 6 \cdot (\frac{1}{6})^3 + 3 \cdot (\frac{2}{3})^3 + 3 \cdot (-\frac{1}{3})^3 + 2 \cdot (-\frac{1}{2})^3 + (-1)^3 = 0$.
+\item $[\text{grav}]^2 \uu{1}_Y$: $\sum_{\text{all}} Y = 6 \cdot \frac{1}{6} + 3 \cdot \frac{2}{3} + 3 \cdot (-\frac{1}{3}) + 2 \cdot (-\frac{1}{2}) + (-1) = 0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+We verify each condition for one generation.
+
+\textbf{Condition 1}: $[\su{3}]^2\uu{1}_Y$. The anomaly coefficient is $\sum_q Y_q$, where the sum is over all left-handed Weyl fermions in the fundamental representation of $\su{3}$ (right-handed fields enter as left-handed with negated hypercharge). $Q_L$ contributes $2 \times (1/6) = 1/3$ (factor of 2 from the $\su{2}$ doublet); $u_R^c$ (left-handed conjugate, $Y = -2/3$) contributes $-2/3$; $d_R^c$ (left-handed conjugate, $Y = 1/3$) contributes $1/3$. Total: $1/3 - 2/3 + 1/3 = 0$. $\checkmark$
+
+\textbf{Condition 2}: $[\su{2}]^2\uu{1}_Y$. The $\su{2}_L$~doublets are $Q_L$ (3 colors, $Y = 1/6$) and $L_L$ ($Y = -1/2$). Sum: $3(1/6) + (-1/2) = 1/2 - 1/2 = 0$. $\checkmark$
+
+\textbf{Condition 3}: $[\uu{1}_Y]^3$. Summing $Y^3$ over all left-handed Weyl fermions (with multiplicities): $Q_L$: $6 \times (1/6)^3 = 6/216 = 1/36$. $u_R$: $3 \times (-2/3)^3 = 3 \times (-8/27) = -8/9$. $d_R$: $3 \times (1/3)^3 = 3/27 = 1/9$. $L_L$: $2 \times (-1/2)^3 = 2 \times (-1/8) = -1/4$. $e_R$: $1 \times (1)^3 = 1$. Total: $1/36 - 8/9 + 1/9 - 1/4 + 1 = 1/36 - 32/36 + 4/36 - 9/36 + 36/36 = 0$. $\checkmark$
+
+\textbf{Condition 4}: $[\text{grav}]^2\uu{1}_Y$. Sum $Y$ over all left-handed Weyl fermions: $Q_L$: $6 \times (1/6) = 1$. $u_R$: $3 \times (-2/3) = -2$. $d_R$: $3 \times (1/3) = 1$. $L_L$: $2 \times (-1/2) = -1$. $e_R$: $1 \times 1 = 1$. Total: $1 - 2 + 1 - 1 + 1 = 0$. $\checkmark$
+\end{proof}
+
+\begin{corollary}[Quark--Lepton Connection]
+\label{cor:quark-lepton}
+Anomaly cancellation requires the presence of both quarks (3 colors) and leptons in each generation. The factor of 3 from color is essential: if quarks did not carry 3 color charges, the anomalies would not cancel. This is a deep emergent constraint linking the $\su{3}_C$ and $\su{2}_L \times \uu{1}_Y$ modules.
+\end{corollary}
+
+
+%% =========================================================================
+\section{Renormalization Group: Compositional Flow Across Scales}
+\label{sec:rge}
+%% =========================================================================
+
+The renormalization group (RG) equations describe how the gauge couplings evolve with energy scale $\mu$. In the modular framework, the RG provides a compositional bridge connecting physics at different scales --- the mathematical embodiment of Law~I (Size-Aware).
+
+\subsection{One-Loop Running of Gauge Couplings}
+
+\begin{theorem}[One-Loop Beta Functions]
+\label{thm:beta-functions}
+The one-loop RG equations for the three Standard Model gauge couplings, expressed in terms of $\alpha_i = g_i^2/(4\pi)$ with the GUT normalization $g_1 = \sqrt{5/3}\, g'$, are:
+\begin{equation}
+\label{eq:rge}
+\mu \frac{d\alpha_i^{-1}}{d\mu} = -\frac{b_i}{2\pi}, \qquad i = 1, 2, 3,
+\end{equation}
+with one-loop coefficients for the Standard Model ($n_g = 3$ generations, $n_H = 1$ Higgs doublet):
+\begin{align}
+b_1 &= \frac{4}{3} n_g + \frac{1}{10} n_H = 4 + \frac{1}{10} = \frac{41}{10}, \\
+b_2 &= -\frac{22}{3} + \frac{4}{3} n_g + \frac{1}{6} n_H = -\frac{22}{3} + 4 + \frac{1}{6} = -\frac{19}{6}, \\
+b_3 &= -11 + \frac{4}{3} n_g = -11 + 4 = -7.
+\end{align}
+\end{theorem}
+
+\begin{remark}
+The signs of the $b_i$ coefficients encode the UV behavior of each gauge module:
+\begin{itemize}
+\item $b_1 > 0$: $\uu{1}_Y$ coupling \emph{increases} with energy (UV-unstable, like QED). The Abelian module exhibits screening.
+\item $b_2 < 0$: $\su{2}_L$ coupling \emph{decreases} with energy (asymptotically free). The non-Abelian module exhibits antiscreening.
+\item $b_3 < 0$: $\su{3}_C$ coupling \emph{decreases} with energy (strongly asymptotically free). QCD confines at low energy.
+\end{itemize}
+This compositional structure --- Abelian modules screen, non-Abelian modules antiscreen --- is a universal consequence of the gauge group algebra.
+\end{remark}
+
+\subsection{Grand Unification and Coupling Convergence}
+
+Extrapolating the running couplings to high energies, one finds approximate convergence:
+\begin{equation}
+\alpha_1^{-1}(\mu_{\mathrm{GUT}}) \approx \alpha_2^{-1}(\mu_{\mathrm{GUT}}) \approx \alpha_3^{-1}(\mu_{\mathrm{GUT}})
+\end{equation}
+at $\mu_{\mathrm{GUT}} \sim 10^{15}$--$10^{16}$~GeV. However, in the minimal Standard Model, the three couplings do not meet at a single point. Supersymmetric extensions (MSSM) improve the convergence, with unification at $\mu_{\mathrm{GUT}} \sim 2 \times 10^{16}$~GeV.
+
+\begin{proposition}[Unification Constraint]
+\label{prop:unification}
+If the three gauge couplings unify at a single scale $\mu_{\mathrm{GUT}}$ into a simple group $G_{\mathrm{GUT}} \supset G_{\mathrm{SM}}$, then the hypercharge normalization is fixed by $G_{\mathrm{GUT}}$. For $G_{\mathrm{GUT}} = \su{5}$, the normalization yields the prediction:
+\begin{equation}
+\sinw = \frac{3}{8} = 0.375 \qquad \text{(at the GUT scale)},
+\end{equation}
+which runs down to $\sinw(m_Z) \approx 0.2312$ at the electroweak scale, in agreement with experiment.
+\end{proposition}
+
+
+%% =========================================================================
+\section{Precision Tests and Experimental Status}
+\label{sec:precision}
+%% =========================================================================
+
+The Standard Model is the most precisely tested theory in physics. We review the key experimental confirmations that validate the modular compositional structure.
+
+\subsection{The Higgs Boson Discovery (2012)}
+
+The Higgs boson was discovered by the ATLAS and CMS collaborations at the Large Hadron Collider (LHC) in July 2012, with mass:
+\begin{equation}
+m_H = 125.25 \pm 0.17~\text{GeV}.
+\end{equation}
+The measured signal strengths in the principal decay channels ($H \to \gamma\gamma$, $H \to ZZ^* \to 4\ell$, $H \to WW^*$, $H \to b\bar{b}$, $H \to \tau^+\tau^-$) are consistent with Standard Model predictions at the 10--20\% level.
+
+\begin{remark}
+The Higgs discovery confirmed the Higgs mechanism as the compositional bridge between the gauge and matter modules. The measured mass $m_H \approx 125$~GeV places the Standard Model vacuum in a metastable state: the Higgs quartic coupling $\lambda(\mu)$ runs negative at $\mu \sim 10^{10}$--$10^{12}$~GeV, suggesting the electroweak vacuum may tunnel to a deeper minimum on cosmological timescales. This is a compositional consequence --- the top Yukawa coupling (matter module) drives $\lambda$ negative via RG running (scale-composition).
+\end{remark}
+
+\subsection{Electroweak Precision Observables}
+
+The LEP and SLC experiments at CERN and SLAC measured $Z$~boson properties with extraordinary precision:
+\begin{align}
+m_Z &= 91.1876 \pm 0.0021~\text{GeV}, \\
+\Gamma_Z &= 2.4952 \pm 0.0023~\text{GeV}, \\
+\sin^2\theta_{\mathrm{eff}}^{\mathrm{lept}} &= 0.23153 \pm 0.00016, \\
+N_\nu &= 2.9840 \pm 0.0082,
+\end{align}
+confirming exactly 3 light neutrino species and validating the electroweak module at the sub-percent level.
+
+\subsection{W Boson Mass}
+
+The $W$~boson mass provides a stringent test of the electroweak sector:
+\begin{equation}
+m_W^{\mathrm{SM}} = 80.357 \pm 0.006~\text{GeV} \qquad \text{(Standard Model prediction)}.
+\end{equation}
+The 2022 CDF measurement ($m_W^{\mathrm{CDF}} = 80.4335 \pm 0.0094$~GeV) was $7\sigma$ above the SM prediction, but subsequent ATLAS~(2024) and CMS~(2024) measurements are consistent with the Standard Model:
+\begin{equation}
+m_W^{\mathrm{ATLAS}} = 80.3665 \pm 0.0159~\text{GeV}, \qquad m_W^{\mathrm{CMS}} \approx 80.360 \pm 0.016~\text{GeV}.
+\end{equation}
+
+\subsection{Anomalous Magnetic Moments}
+
+\begin{proposition}[Electron $g-2$: The Most Precise QED Prediction]
+\label{prop:electron-g2}
+The electron anomalous magnetic moment $a_e = (g_e - 2)/2$ is predicted by the Standard Model to:
+\begin{equation}
+a_e^{\mathrm{SM}} = 0.001\,159\,652\,180\,73(28),
+\end{equation}
+which agrees with the experimental measurement:
+\begin{equation}
+a_e^{\mathrm{exp}} = 0.001\,159\,652\,180\,59(13),
+\end{equation}
+to 13~significant figures. This is the most precise agreement between theory and experiment in all of science.
+\end{proposition}
+
+The muon anomalous magnetic moment $a_\mu$ shows a $\sim 4.2\sigma$ discrepancy between the BNL/Fermilab measurement and the data-driven theoretical prediction, although recent lattice QCD calculations by the BMW collaboration reduce the tension. The resolution of this discrepancy --- whether it points to new physics or reflects hadronic uncertainties --- is an active frontier.
+
+\subsection{CP Violation and the CKM Matrix}
+
+CP violation has been observed in the kaon system (1964), the $B$~meson system (2001), the $D$~meson system (2019), and most recently in baryon decays:
+
+\begin{itemize}
+\item \textbf{LHCb 2025}: First observation of CP violation in $\Lambda_b$ baryon decays ($\Lambda_b \to p\pi^-\pi^+\pi^-$ and $\Lambda_b \to pK^-K^+K^-$), published in \textit{Nature}~(2025). This extends the CKM paradigm to the baryon sector.
+\end{itemize}
+
+The unitarity triangle analysis confirms the consistency of the CKM picture, with the Jarlskog invariant:
+\begin{equation}
+J = \mathrm{Im}(V_{us} V_{cb} V_{ub}^* V_{cs}^*) \approx 3.0 \times 10^{-5}.
+\end{equation}
+
+\begin{remark}
+A recent $\sim 3\sigma$ tension in Cabibbo universality tests from first-row CKM unitarity ($|V_{ud}|^2 + |V_{us}|^2 + |V_{ub}|^2 = 1$) in 2024 SMEFT analyses suggests possible hints of new physics or underestimated radiative corrections. This is an active area of investigation.
+\end{remark}
+
+\subsection{Neutrino Oscillations}
+
+Neutrino oscillation experiments (Super-Kamiokande, SNO, Daya Bay, T2K, NOvA) have established:
+\begin{align}
+\Delta m_{21}^2 &\approx 7.5 \times 10^{-5}~\text{eV}^2, \\
+|\Delta m_{31}^2| &\approx 2.5 \times 10^{-3}~\text{eV}^2, \\
+\theta_{12} &\approx 34^\circ, \quad \theta_{23} \approx 49^\circ, \quad \theta_{13} \approx 8.5^\circ.
+\end{align}
+The leptonic CP-violating phase $\delta_{\mathrm{CP}}$ is measured by T2K and NOvA to be near $-90^\circ$ (maximal CP violation) but with large uncertainties. DUNE will provide a definitive measurement.
+
+\begin{remark}
+Neutrino masses require extending the minimal Standard Model. The seesaw mechanism introduces right-handed neutrinos $N_R$ with Majorana masses $M_R \gg v$, yielding light neutrino masses $m_\nu \sim v^2/M_R$. This extension is a modular addition to the Standard Model: the neutrino mass module composes with the existing framework via Yukawa couplings and Majorana mass terms.
+\end{remark}
+
+
+%% =========================================================================
+\section{Open Problems and the Path to Law IV}
+\label{sec:open-problems}
+%% =========================================================================
+
+The Standard Model, despite its extraordinary success, leaves several fundamental questions unanswered. In the modular framework, these open problems identify where the current compositional structure must be extended.
+
+\subsection{The Hierarchy Problem}
+
+\begin{definition}[Hierarchy Problem]
+Why is the Higgs mass $m_H \approx 125$~GeV so much smaller than the Planck mass $\Mpl \approx 1.22 \times 10^{19}$~GeV? The ratio $m_H / \Mpl \sim 10^{-17}$ is unexplained.
+\end{definition}
+
+Quantum corrections to the Higgs mass are quadratically divergent:
+\begin{equation}
+\delta m_H^2 \sim \frac{\Lambda^2}{16\pi^2} \left( 6\lambda + 6 y_t^2 - \frac{9}{4} g^2 - \frac{3}{4} g'^2 \right),
+\end{equation}
+where $\Lambda$ is the UV cutoff. If $\Lambda \sim \Mpl$, then $\delta m_H^2 \sim 10^{34}$~GeV$^2$, requiring extreme fine-tuning to achieve $m_H^2 \sim 10^4$~GeV$^2$.
+
+Proposed solutions include:
+\begin{itemize}
+\item \textbf{Supersymmetry}: Boson--fermion partners cancel quadratic divergences.
+\item \textbf{Composite Higgs}: The Higgs as a pseudo-Goldstone boson of a new strong sector.
+\item \textbf{Extra dimensions}: Lowering the effective Planck scale (Randall--Sundrum, ADD).
+\item \textbf{Relaxion mechanism}: Dynamical relaxation of the Higgs mass.
+\end{itemize}
+
+\subsection{The Strong CP Problem}
+
+The QCD Lagrangian admits a CP-violating term:
+\begin{equation}
+\lag_\theta = \frac{\theta}{32\pi^2} G^a_{\mu\nu} \tilde{G}_a^{\mu\nu},
+\end{equation}
+where $\tilde{G}_a^{\mu\nu} = \frac{1}{2} \epsilon^{\mu\nu\rho\sigma} G_{a\rho\sigma}$ is the dual field strength. This term would induce an electric dipole moment of the neutron:
+\begin{equation}
+d_n \sim \theta \times 10^{-16}~e\cdot\text{cm}.
+\end{equation}
+The experimental bound $d_n < 1.8 \times 10^{-26}$~$e\cdot$cm implies $|\theta| < 10^{-10}$.
+
+\begin{remark}
+The strong CP problem is a naturalness puzzle: why is $\theta$ so small? The Peccei--Quinn mechanism introduces an axial $\uu{1}_{\mathrm{PQ}}$ symmetry whose spontaneous breaking produces the axion --- a light pseudoscalar particle that dynamically relaxes $\theta \to 0$. The axion is also a dark matter candidate, providing a compositional link between the strong CP module and cosmology.
+\end{remark}
+
+\subsection{Neutrino Mass Mechanism}
+
+The seesaw mechanism provides a natural framework for small neutrino masses:
+\begin{equation}
+m_\nu \sim \frac{(y_\nu v)^2}{M_R},
+\end{equation}
+where $M_R$ is the Majorana mass of right-handed neutrinos. For $m_\nu \sim 0.1$~eV and $y_\nu \sim 1$, this gives $M_R \sim 10^{14}$~GeV, near the GUT scale.
+
+Whether neutrinos are Dirac or Majorana particles is probed by neutrinoless double-beta decay experiments (GERDA, CUORE, KamLAND-Zen, nEXO, LEGEND). The observation of $0\nu\beta\beta$ decay would demonstrate lepton number violation and establish Majorana neutrino masses --- a modular extension of the Standard Model with profound implications for leptogenesis and baryogenesis.
+
+\subsection{Dark Matter}
+
+The Standard Model contains no viable dark matter candidate consistent with cosmological observations ($\Omega_{\mathrm{DM}} h^2 \approx 0.12$). Leading candidates beyond the Standard Model include:
+\begin{itemize}
+\item WIMPs (Weakly Interacting Massive Particles),
+\item Axions (from the strong CP solution),
+\item Sterile neutrinos,
+\item Primordial black holes.
+\end{itemize}
+
+\subsection{Baryogenesis and the Matter--Antimatter Asymmetry}
+
+The observed baryon-to-photon ratio $\eta \approx 6.1 \times 10^{-10}$ requires CP violation beyond the CKM phase. The Sakharov conditions (baryon number violation, C and CP violation, departure from thermal equilibrium) must be satisfied more strongly than the Standard Model allows.
+
+\begin{proposition}[Insufficiency of Standard Model CP Violation]
+\label{prop:sakharov-insufficient}
+The CKM CP violation produces a baryon asymmetry many orders of magnitude too small:
+\begin{equation}
+\eta_{\mathrm{CKM}} \sim J \cdot \frac{m_t^2 m_b^2 m_c^2 m_s^2 (m_t^2 - m_c^2)(m_t^2 - m_u^2)(m_c^2 - m_u^2)(m_b^2 - m_s^2)(m_b^2 - m_d^2)(m_s^2 - m_d^2)}{T_{\mathrm{EW}}^{12}} \sim 10^{-20},
+\end{equation}
+which is $\sim 10^{10}$ times smaller than the observed $\eta \sim 10^{-10}$.
+\end{proposition}
+
+\subsection{The Path to Law IV: Quantum Gravity}
+
+The Standard Model does not include gravity. General relativity is not renormalizable as a quantum field theory. The compositional frontier --- extending the modular framework to include Law~IV (Gravitational) --- requires fundamentally new ideas:
+\begin{itemize}
+\item \textbf{String Theory / M-Theory}: Unifies all forces including gravity in 10/11 dimensions.
+\item \textbf{Loop Quantum Gravity}: Quantizes spacetime geometry directly.
+\item \textbf{Asymptotic Safety}: Postulates a UV fixed point for the gravitational coupling.
+\item \textbf{Emergent Gravity}: Gravity as a thermodynamic or entropic phenomenon.
+\end{itemize}
+
+\begin{remark}
+The cosmological constant problem --- the vacuum energy discrepancy of $\sim 10^{120}$ between prediction and observation --- is arguably the most severe naturalness problem in physics. It arises directly from the composition of quantum field theory (Law~III) with gravity (Law~IV), making it the defining challenge of the Law~III $\to$ Law~IV compositional step.
+\end{remark}
+
+
+%% =========================================================================
+\section{Results: Formal Compositional Structure}
+\label{sec:results}
+%% =========================================================================
+
+We now state the main formal results that characterize the Standard Model as a modular composition.
+
+\begin{theorem}[Modular Decomposition of the Standard Model]
+\label{thm:modular-decomposition}
+The Standard Model Lagrangian~\eqref{eq:full-lagrangian} admits a modular decomposition into four composable sectors:
+\begin{equation}
+\lag_{\mathrm{SM}} = \underbrace{\lag_{\mathrm{gauge}}}_{\text{gauge module}} + \underbrace{\lag_{\mathrm{fermion}}}_{\text{matter module}} + \underbrace{\lag_{\mathrm{Higgs}}}_{\text{symmetry-breaking module}} + \underbrace{\lag_{\mathrm{Yukawa}}}_{\text{mass-generation module}},
+\end{equation}
+where each module is independently gauge-invariant and their composition produces emergent properties absent from any individual module.
+\end{theorem}
+
+\begin{proof}
+Each sector is separately invariant under $G_{\mathrm{SM}}$ gauge transformations:
+\begin{itemize}
+\item $\lag_{\mathrm{gauge}}$ involves only gauge fields and is invariant by construction (Yang--Mills).
+\item $\lag_{\mathrm{fermion}}$ involves fermion fields coupled to gauge fields via the covariant derivative; invariance follows from the transformation properties of $\dmu$.
+\item $\lag_{\mathrm{Higgs}}$ involves the Higgs doublet coupled to gauge fields; invariance follows from $H \sim (\mathbf{1}, \mathbf{2}, +1/2)$.
+\item $\lag_{\mathrm{Yukawa}}$ involves gauge-invariant contractions of $Q_L$, $H$, and $u_R/d_R$ (and similarly for leptons); invariance is verified by checking quantum numbers.
+\end{itemize}
+The emergent properties of the composition include: mass generation (requires Higgs + fermion + Yukawa), anomaly cancellation (requires specific matter content + gauge group), and asymptotic freedom (requires non-Abelian gauge + matter in specific representations).
+\end{proof}
+
+\begin{theorem}[Emergent Properties of the Synthesis]
+\label{thm:emergent-properties}
+The modular composition $G_{\mathrm{SM}} + \text{matter fields} + \text{Higgs}$ produces the following emergent properties, none of which is present in any individual module:
+\begin{enumerate}
+\item \textbf{Mass spectrum}: The composition of the Higgs module with the gauge module generates $m_W$, $m_Z$, and $m_H$. The further composition with the Yukawa module generates all fermion masses $m_f = y_f v / \sqrt{2}$.
+\item \textbf{Weak universality}: All three generations couple with equal gauge coupling strength to $W/Z$, despite different masses.
+\item \textbf{Anomaly cancellation}: The specific hypercharge assignments, combined with 3~colors for quarks, produce cancellation of all gauge anomalies (\cref{thm:anomaly-cancellation}).
+\item \textbf{Asymptotic freedom + confinement}: The non-Abelian $\su{3}_C$ self-interactions, modulated by the number of quark flavors ($N_f = 6$), produce asymptotic freedom at short distances and confinement at long distances.
+\item \textbf{CP violation}: The composition of three generations of quarks with the Higgs module produces exactly one CKM CP-violating phase (\cref{thm:cp-violation-ckm}).
+\item \textbf{Dynamical mass generation}: The QCD module composes with the quark matter module to generate $\sim 99\%$ of hadronic mass via confinement (\cref{prop:hadron-mass}).
+\item \textbf{Nuclear stability}: The composition of electromagnetic, strong, and weak modules produces the valley of nuclear stability.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Hierarchical Law Composition]
+\label{thm:law-composition}
+The Standard Model instantiates the modular physics framework hierarchy:
+\begin{enumerate}
+\item \textbf{Law I $\to$ Law II}: The characteristic scales $v \approx 246$~GeV and $\Lambda_{\mathrm{QCD}} \approx 200$~MeV (Law~I) combine with finite-temperature QFT to produce the QCD phase diagram and electroweak phase transition (Law~II).
+\item \textbf{Law II $\to$ Law III}: Thermal field theory (Law~II) at the electroweak scale, combined with Sakharov conditions, produces the baryogenesis mechanism (Law~III quantum dynamics in a Law~II thermal environment).
+\item \textbf{Law III internal composition}: The three gauge modules $\su{3}_C$, $\su{2}_L$, $\uu{1}_Y$ compose with matter and Higgs modules at Law~III to produce the full Standard Model with all emergent properties listed in \cref{thm:emergent-properties}.
+\item \textbf{Law III $\to$ Law IV}: The Standard Model (Law~III) must be extended to include gravity. The hierarchy problem, cosmological constant problem, and dark matter problem are all artifacts of this incomplete compositional step.
+\end{enumerate}
+\end{theorem}
+
+
+%% =========================================================================
+\section{Discussion}
+\label{sec:discussion}
+%% =========================================================================
+
+\subsection{The Standard Model as a Modular Achievement}
+
+The Standard Model is arguably the greatest intellectual achievement of the 20th century in natural science. Our analysis reveals that its power derives not from any single insight, but from the modular composition of independently well-understood components. The gauge principle provides the dynamical framework. The Higgs mechanism provides the symmetry-breaking compositional bridge. The fermion representations provide the matter content. And the Yukawa couplings provide the compositional interface between matter and symmetry breaking.
+
+The anomaly cancellation conditions (\cref{thm:anomaly-cancellation}) demonstrate that the internal consistency of the theory is itself an emergent property of the composition: quarks must carry exactly 3 colors, and each generation must contain both quarks and leptons with specific hypercharges. This is not imposed by hand --- it emerges as a necessary condition for quantum consistency when the modules are composed.
+
+\subsection{CPT, CP Violation, and the Antimatter Connection}
+
+The CPT theorem --- that any Lorentz-invariant local QFT with a Hermitian Hamiltonian is CPT-invariant --- is a derived property of the compositional structure. The Standard Model satisfies all the premises of the theorem (Lorentz invariance, locality, Hermiticity), and CPT invariance is consequently an emergent symmetry.
+
+CP violation, by contrast, is a feature of the Yukawa module: it arises from the complex phase in the CKM matrix, which exists because there are three generations. The LHCb 2025 observation of CP violation in baryon decays confirms that the Kobayashi--Maskawa paradigm extends to all quark-containing hadrons, further validating the compositional structure.
+
+The matter--antimatter asymmetry of the universe ($\eta \approx 6 \times 10^{-10}$) demonstrates that the Standard Model composition, while providing a mechanism for CP violation, is quantitatively insufficient for baryogenesis. This points to modular extensions --- leptogenesis via the seesaw mechanism, electroweak baryogenesis with extended scalar sectors, or entirely new CP-violating modules --- as necessary additions to the framework.
+
+\subsection{Renormalization Group as Scale Composition}
+
+The running of the gauge couplings (\cref{sec:rge}) provides a concrete realization of Law~I (Size-Aware) within the modular framework. At different energy scales, the effective description of the theory changes: heavy particles decouple, coupling constants evolve, and new degrees of freedom become relevant. This scale-dependent composition is the mathematical content of the renormalization group.
+
+The approximate convergence of the three gauge couplings near $10^{15}$--$10^{16}$~GeV suggests that the Standard Model gauge group $G_{\mathrm{SM}}$ may be a low-energy remnant of a larger simple group $G_{\mathrm{GUT}}$ (such as $\su{5}$ or $\mathrm{SO}(10)$), which would represent a deeper level of modular composition.
+
+\subsection{Comparison with Alternative Frameworks}
+
+The modular perspective on the Standard Model complements and extends several existing frameworks:
+\begin{itemize}
+\item \textbf{Effective Field Theory (EFT)}: The modular framework is compatible with the EFT paradigm, where physics at each scale is described by the relevant degrees of freedom. The modular laws (I through IV) organize the hierarchy of effective descriptions.
+\item \textbf{Category-Theoretic Approaches}: The modular composition of gauge theories can be formalized using the language of topological quantum field theories (TQFTs) and higher categories. The gauge modules are objects in a suitable category, and their composition is the categorical product or tensor product.
+\item \textbf{Bootstrap Methods}: The conformal bootstrap approach to QFT determines physical quantities from consistency conditions (unitarity, crossing symmetry), analogous to the way anomaly cancellation constrains the matter content in the modular framework.
+\end{itemize}
+
+\subsection{Limitations of the Current Synthesis}
+
+The modular framework identifies several areas where the current synthesis is incomplete:
+\begin{enumerate}
+\item The \textbf{flavor sector} --- the 22 free parameters of the Standard Model (6 quark masses, 3 charged lepton masses, 4 CKM parameters, 3 gauge couplings, the Higgs mass and VEV, the QCD $\theta$ parameter, and the cosmological constant) --- is not explained by any known compositional principle.
+\item The \textbf{generation structure} --- why three and only three generations --- is an input, not an output, of the composition.
+\item The \textbf{Higgs potential parameters} $\mu^2$ and $\lambda$ are not determined by gauge invariance or any other compositional constraint.
+\item The \textbf{gravitational module} (Law~IV) remains unincorporated.
+\end{enumerate}
+
+
+%% =========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%% =========================================================================
+
+We have presented a comprehensive analysis of the Standard Model of particle physics from the perspective of modular composition. The central results are:
+
+\begin{enumerate}
+\item The Standard Model Lagrangian decomposes into four independently gauge-invariant modules (gauge, fermion, Higgs, Yukawa), whose composition produces emergent properties including mass generation, anomaly cancellation, asymptotic freedom, confinement, CP~violation, and dynamical hadronic mass (\cref{thm:modular-decomposition,thm:emergent-properties}).
+
+\item The modular physics framework hierarchy (Law~I through Law~IV) organizes the compositional structure, with the renormalization group providing the scale-dependent compositional bridge (Law~I), finite-temperature QFT providing the thermal compositional layer (Law~II), gauge quantum field theory providing the core quantum composition (Law~III), and gravity remaining as the open frontier (Law~IV) (\cref{thm:law-composition}).
+
+\item Anomaly cancellation is proven as an emergent consistency condition that necessarily links the quark and lepton content of each generation, with the factor of 3 from color playing a decisive role (\cref{thm:anomaly-cancellation,cor:quark-lepton}).
+
+\item The precision experimental tests --- from the electron $g-2$ agreement to 13~significant figures, to the Higgs discovery at 125~GeV, to the LHCb 2025 observation of CP violation in baryon decays --- validate the compositional structure at extraordinary precision.
+
+\item The open problems (hierarchy, strong CP, neutrino masses, dark matter, baryogenesis, quantum gravity) identify the frontiers where the modular framework must be extended, with the Law~III $\to$ Law~IV transition being the fundamental challenge.
+\end{enumerate}
+
+The modular perspective reveals that the Standard Model is not merely a collection of particles and forces, but a compositional structure in which each module contributes essential properties that emerge only through their interaction. Understanding this compositional architecture is prerequisite to extending the framework toward a complete theory of fundamental physics.
+
+\bigskip
+
+\noindent\textbf{Acknowledgments.}
+This work was conducted as part of the YonedaAI Research Collective's program on modular physics. We thank colleagues for discussions on gauge theory, symmetry breaking, and compositional frameworks.
+
+
+%% =========================================================================
+\section*{References}
+%% =========================================================================
+\addcontentsline{toc}{section}{References}
+
+\begin{enumerate}
+\item S.~L.~Glashow, ``Partial-symmetries of weak interactions,'' \textit{Nucl.\ Phys.}\ \textbf{22}, 579--588 (1961).
+
+\item S.~Weinberg, ``A model of leptons,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{19}, 1264--1266 (1967).
+
+\item A.~Salam, ``Weak and electromagnetic interactions,'' in \textit{Elementary Particle Theory}, ed.\ N.~Svartholm, Almqvist and Wiksell, Stockholm, pp.~367--377 (1968).
+
+\item P.~W.~Higgs, ``Broken symmetries and the masses of gauge bosons,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{13}, 508--509 (1964).
+
+\item F.~Englert and R.~Brout, ``Broken symmetry and the mass of gauge vector mesons,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{13}, 321--323 (1964).
+
+\item G.~S.~Guralnik, C.~R.~Hagen, and T.~W.~B.~Kibble, ``Global conservation laws and massless particles,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{13}, 585--587 (1964).
+
+\item D.~J.~Gross and F.~Wilczek, ``Ultraviolet behavior of non-Abelian gauge theories,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{30}, 1343--1346 (1973).
+
+\item H.~D.~Politzer, ``Reliable perturbative results for strong interactions?,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{30}, 1346--1349 (1973).
+
+\item M.~Kobayashi and T.~Maskawa, ``CP-violation in the renormalizable theory of weak interaction,'' \textit{Prog.\ Theor.\ Phys.}\ \textbf{49}, 652--657 (1973).
+
+\item G.~'t~Hooft and M.~J.~G.~Veltman, ``Regularization and renormalization of gauge fields,'' \textit{Nucl.\ Phys.}\ B \textbf{44}, 189--213 (1972).
+
+\item J.~Goldstone, A.~Salam, and S.~Weinberg, ``Broken symmetries,'' \textit{Phys.\ Rev.}\ \textbf{127}, 965--970 (1962).
+
+\item ATLAS Collaboration, ``Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC,'' \textit{Phys.\ Lett.}\ B \textbf{716}, 1--29 (2012).
+
+\item CMS Collaboration, ``Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC,'' \textit{Phys.\ Lett.}\ B \textbf{716}, 30--61 (2012).
+
+\item Particle Data Group, ``Review of Particle Physics,'' \textit{Phys.\ Rev.}\ D \textbf{110}, 030001 (2024).
+
+\item A.~D.~Sakharov, ``Violation of CP invariance, C asymmetry, and baryon asymmetry of the universe,'' \textit{JETP Lett.}\ \textbf{5}, 24--27 (1967).
+
+\item LHCb Collaboration, ``Observation of CP violation in baryon decays,'' \textit{Nature} (2025).
+
+\item ALPHA Collaboration, ``Observation of the effect of gravity on the motion of antimatter,'' \textit{Nature}\ \textbf{621}, 716--722 (2023).
+
+\item S.~Coleman and J.~Mandula, ``All possible symmetries of the S matrix,'' \textit{Phys.\ Rev.}\ \textbf{159}, 1251--1256 (1967).
+
+\item R.~D.~Peccei and H.~R.~Quinn, ``CP conservation in the presence of pseudoparticles,'' \textit{Phys.\ Rev.\ Lett.}\ \textbf{38}, 1440--1443 (1977).
+
+\item G.~L\"uders, ``On the equivalence of invariance under time reversal and under particle-antiparticle conjugation for relativistic field theories,'' \textit{Kongelige Danske Videnskabernes Selskab, Matematisk-Fysiske Meddelelser}\ \textbf{28}, 1--17 (1954).
+\end{enumerate}
+
+\end{document}
