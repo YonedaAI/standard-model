@@ -16,3 +16,5 @@ code/haskell/UnifiedSynthesis
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*.hi
+*.o
