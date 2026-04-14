@@ -184,13 +184,13 @@ lambda_CKM :: Double
 lambda_CKM = 0.22500
 
 aCKM :: Double
-aCKM = 0.826
+aCKM = 0.839
 
 rhoBar :: Double
-rhoBar = 0.159
+rhoBar = 0.1581
 
 etaBar :: Double
-etaBar = 0.348
+etaBar = 0.3548
 
 -- | Wolfenstein parameterization of CKM matrix
 wolfen :: [[Complex Double]]

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
 
 type Paper = {
   slug: string;
@@ -60,11 +61,13 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        const intersecting = entries.filter(e => e.isIntersecting);
+        if (intersecting.length > 0) {
+          const topmost = intersecting.reduce((a, b) =>
+            a.boundingClientRect.top < b.boundingClientRect.top ? a : b
+          );
+          setActiveId(topmost.target.id);
+        }
       },
       { rootMargin: "-20% 0% -60% 0%" }
     );
@@ -75,7 +78,7 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <nav className="flex items-center gap-2 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
         <Link
           href="/"
           className="transition-colors hover:text-accent-hover"
@@ -97,7 +100,7 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
               style={{ color: "var(--text-muted)" }}>
               Contents
             </div>
-            <nav>
+            <nav aria-label="Table of contents">
               {tocItems.map((item) => (
                 <a
                   key={item.id}
@@ -233,19 +236,14 @@ export default function PaperLayout({ paper, prevPaper, nextPaper, htmlContent }
             </div>
           </header>
 
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
-            crossOrigin="anonymous"
-          />
-
           <div
             ref={contentRef}
             className="paper-content"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }}
           />
 
           <nav
+            aria-label="Paper navigation"
             className="mt-12 pt-8 border-t flex flex-col sm:flex-row gap-4 justify-between"
             style={{ borderColor: "var(--border)" }}
           >

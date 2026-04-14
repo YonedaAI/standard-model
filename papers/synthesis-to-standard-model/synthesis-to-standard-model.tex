@@ -148,7 +148,7 @@ The electric charge operator $Q$ is
 \label{eq:gmn}
 Q = T^3 + Y,
 \end{equation}
-where $T^3$ is the third component of weak isospin and $Y$ is the weak hypercharge.
+where $T^3$ is the third component of weak isospin and $Y$ is the weak hypercharge. We use the convention $Q = T^3 + Y$ (not $Q = T^3 + Y/2$), so the hypercharge assignments listed in \cref{def:fermion-reps} already absorb the factor of $\frac{1}{2}$.
 \end{definition}
 
 \subsection{Modular Decomposition of the Gauge Group}
@@ -309,7 +309,7 @@ At tree level, the ratio
 is a consequence of the custodial $\su{2}_V$ symmetry of the Higgs sector (the global symmetry $\mathrm{SO}(4) \cong \su{2}_L \times \su{2}_R$ broken to the diagonal $\su{2}_V$). Radiative corrections modify this:
 \begin{equation}
 \label{eq:delta-rho}
-\Delta\rho \approx \frac{3 G_F}{8\pi^2 \sqrt{2}} m_t^2 \approx 0.0095.
+\Delta\rho \approx \frac{3 G_F}{8\pi^2 \sqrt{2}} m_t^2 \approx 0.0095 \qquad (\text{using } m_t = 172.69~\text{GeV, PDG 2024}).
 \end{equation}
 \end{theorem}
 
@@ -402,7 +402,7 @@ spontaneously broken by the quark condensate $\vev{\bar{\psi}\psi} \neq 0$. The 
 \label{prop:hadron-mass}
 Approximately 99\% of the mass of visible baryonic matter (protons, neutrons) arises from QCD binding energy, not from the Higgs-generated quark masses. Specifically:
 \begin{equation}
-m_p \approx 938~\text{MeV}, \qquad m_u + m_d + m_u \approx 9~\text{MeV}.
+m_p \approx 938~\text{MeV}, \qquad 2m_u + m_d \approx 9~\text{MeV}.
 \end{equation}
 The dominant contribution comes from the chromodynamic self-energy of the gluon field and the kinetic energy of confined quarks, as computed by lattice QCD.
 \end{proposition}
@@ -615,6 +615,8 @@ The existence of exactly one CP-violating phase in the CKM matrix, combined with
 
 One of the most remarkable emergent properties of the Standard Model is the cancellation of gauge anomalies. An anomaly occurs when a classical symmetry is broken by quantum effects (loop diagrams), potentially rendering the theory inconsistent (non-unitary or non-renormalizable).
 
+\textbf{Convention.} Throughout this section we work in the basis of left-handed Weyl fermions, where right-handed fields $f_R$ are replaced by their charge conjugates $f_R^c$ with $Y \to -Y$. Thus, for example, $u_R$ with $Y = +2/3$ becomes $u_R^c$ with $Y = -2/3$, and all anomaly sums run over left-handed fields only.
+
 \begin{definition}[Gauge Anomaly]
 \label{def:anomaly}
 A gauge anomaly arises when the divergence of a gauge current receives a quantum correction:
@@ -672,9 +674,9 @@ The renormalization group (RG) equations describe how the gauge couplings evolve
 The one-loop RG equations for the three Standard Model gauge couplings, expressed in terms of $\alpha_i = g_i^2/(4\pi)$ with the GUT normalization $g_1 = \sqrt{5/3}\, g'$, are:
 \begin{equation}
 \label{eq:rge}
-\mu \frac{d\alpha_i^{-1}}{d\mu} = -\frac{b_i}{2\pi}, \qquad i = 1, 2, 3,
+\mu \frac{d\alpha_i^{-1}}{d\ln\mu} = -\frac{b_i}{2\pi}, \qquad i = 1, 2, 3,
 \end{equation}
-with one-loop coefficients for the Standard Model ($n_g = 3$ generations, $n_H = 1$ Higgs doublet):
+where we adopt the sign convention in which $b_i < 0$ corresponds to asymptotic freedom (the coupling $\alpha_i$ decreases at high energy). With one-loop coefficients for the Standard Model ($n_g = 3$ generations, $n_H = 1$ Higgs doublet):
 \begin{align}
 b_1 &= \frac{4}{3} n_g + \frac{1}{10} n_H = 4 + \frac{1}{10} = \frac{41}{10}, \\
 b_2 &= -\frac{22}{3} + \frac{4}{3} n_g + \frac{1}{6} n_H = -\frac{22}{3} + 4 + \frac{1}{6} = -\frac{19}{6}, \\
@@ -687,7 +689,7 @@ The signs of the $b_i$ coefficients encode the UV behavior of each gauge module:
 \begin{itemize}
 \item $b_1 > 0$: $\uu{1}_Y$ coupling \emph{increases} with energy (UV-unstable, like QED). The Abelian module exhibits screening.
 \item $b_2 < 0$: $\su{2}_L$ coupling \emph{decreases} with energy (asymptotically free). The non-Abelian module exhibits antiscreening.
-\item $b_3 < 0$: $\su{3}_C$ coupling \emph{decreases} with energy (strongly asymptotically free). QCD confines at low energy.
+\item $b_3 < 0$: $\su{3}_C$ coupling \emph{decreases} with energy (strongly asymptotically free); equivalently, $\alpha_3$ grows at low energy, driving confinement.
 \end{itemize}
 This compositional structure --- Abelian modules screen, non-Abelian modules antiscreen --- is a universal consequence of the gauge group algebra.
 \end{remark}
@@ -982,7 +984,7 @@ The modular perspective on the Standard Model complements and extends several ex
 
 The modular framework identifies several areas where the current synthesis is incomplete:
 \begin{enumerate}
-\item The \textbf{flavor sector} --- the 22 free parameters of the Standard Model (6 quark masses, 3 charged lepton masses, 4 CKM parameters, 3 gauge couplings, the Higgs mass and VEV, the QCD $\theta$ parameter, and the cosmological constant) --- is not explained by any known compositional principle.
+\item The \textbf{flavor sector} --- the 19 free parameters of the Standard Model (6 quark masses, 3 charged lepton masses, 4 CKM parameters, 3 gauge couplings, the Higgs mass and VEV, and the QCD $\theta$ parameter) --- is not explained by any known compositional principle.
 \item The \textbf{generation structure} --- why three and only three generations --- is an input, not an output, of the composition.
 \item The \textbf{Higgs potential parameters} $\mu^2$ and $\lambda$ are not determined by gauge invariance or any other compositional constraint.
 \item The \textbf{gravitational module} (Law~IV) remains unincorporated.

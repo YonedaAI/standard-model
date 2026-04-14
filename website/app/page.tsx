@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Standard Model — Modular Physics Framework",
     description:
       "A four-paper research series presenting the Standard Model of particle physics through modular composition.",
-    images: [{ url: "/og/matter-og.png", width: 1200, height: 630 }],
+    images: [{ url: "/og/unified-synthesis-og.png", width: 1200, height: 630 }],
   },
 };
 
@@ -144,7 +144,7 @@ function PaperCard({ paper }: { paper: Paper }) {
         </h3>
 
         <p className="text-xs leading-relaxed mb-4 flex-1 line-clamp-4 text-muted">
-          {paper.abstract.slice(0, 160)}...
+          {paper.abstract}
         </p>
 
         <div className="flex items-center gap-2 mb-4 flex-wrap">

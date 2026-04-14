@@ -9,7 +9,7 @@
 module Main where
 
 import Data.Complex
-import Data.List (intercalate)
+import Data.List (intercalate, transpose)
 import Text.Printf (printf)
 
 -- ============================================================================
@@ -173,15 +173,9 @@ matMul a b =
 dagger :: Matrix3 -> Matrix3
 dagger = map (map conjugate) . transpose3
 
--- | Transpose
+-- | Transpose (delegates to Data.List.transpose)
 transpose3 :: [[a]] -> [[a]]
-transpose3 ([]:_) = []
-transpose3 xss    = map safeHead xss : transpose3 (map safeTail xss)
-  where
-    safeHead (x:_) = x
-    safeHead []    = error "transpose3: empty row"
-    safeTail (_:xs) = xs
-    safeTail []     = error "transpose3: empty row"
+transpose3 = transpose
 
 -- | Check unitarity: V^dag V ~ Identity
 checkUnitarity :: Matrix3 -> Double
@@ -223,7 +217,7 @@ etaSMEstimate jarlskog =
   let -- Quark mass hierarchy suppression factor (schematic)
       mt = 173.0; mc = 1.27; mu = 0.00216    -- up-type masses in GeV
       mb = 4.18;  ms = 0.093; md = 0.00467   -- down-type masses in GeV
-      v  = 246.0                               -- Higgs VEV in GeV
+      v  = 246.22                              -- Higgs VEV in GeV
       v12 = sq (sq (sq v)) * sq (sq v)  -- v^12 = v^8 * v^4
       massFactor = (sq mt - sq mc) * (sq mt - sq mu) * (sq mc - sq mu)
                  * (sq mb - sq ms) * (sq mb - sq md) * (sq ms - sq md)
@@ -348,7 +342,7 @@ main = do
   -- Section 6: Wolfenstein parameterization
   putStrLn "--- Section 6: Wolfenstein Parameterization ---"
   putStrLn ""
-  let vw = ckmWolfenstein 0.22500 0.826 0.159 0.349
+  let vw = ckmWolfenstein 0.22500 0.839 0.1581 0.3548
   printMatrix "CKM (Wolfenstein, leading order)" vw
   putStrLn ""
 

@@ -120,6 +120,8 @@ data FermionRep = FermionRep
 
 -- | Standard Model fermions (one generation, left-handed Weyl)
 -- Right-handed fermions enter as left-handed with negated Y
+-- Convention: right-handed fields listed as LH conjugates with Y -> -Y.
+-- This is equivalent to using a chirality factor.
 smFermionsLH :: [FermionRep]
 smFermionsLH =
   [ FermionRep "Q_L"       3  2  (1.0/6.0)    -- Left-handed quark doublet
@@ -226,9 +228,9 @@ dofAfterSSB  = 1 + 3*3 + 2
 -- | Wolfenstein parameters
 lambda_CKM, bigA_CKM, rhoBar_CKM, etaBar_CKM :: Double
 lambda_CKM  = 0.22500
-bigA_CKM    = 0.826
-rhoBar_CKM  = 0.159
-etaBar_CKM  = 0.348
+bigA_CKM    = 0.839
+rhoBar_CKM  = 0.1581
+etaBar_CKM  = 0.3548
 
 -- | Number of CP-violating phases for n generations
 cpPhases :: Int -> Int

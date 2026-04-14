@@ -23,7 +23,7 @@ sin2ThetaW = 0.2312
 
 -- Higgs sector
 v_higgs :: Double  -- GeV
-v_higgs = 246.0
+v_higgs = 246.22
 
 m_higgs :: Double  -- GeV
 m_higgs = 125.25
@@ -71,13 +71,13 @@ lambda_CKM :: Double
 lambda_CKM = 0.22500
 
 a_CKM :: Double
-a_CKM = 0.826
+a_CKM = 0.839
 
 rhoBar :: Double
-rhoBar = 0.159
+rhoBar = 0.1581
 
 etaBar :: Double
-etaBar = 0.349
+etaBar = 0.3548
 
 -- Baryon-to-photon ratio
 eta_obs :: Double
@@ -206,6 +206,7 @@ theta13 = asin (a_CKM * lambda_CKM ^ (3 :: Int) * sqrt (rhoBar^(2::Int) + etaBar
 
 -- CP-violating phase delta
 deltaCP :: Double
+-- Wolfenstein approximation; exact PDG value is delta = 1.144 rad (65.6 deg)
 deltaCP = atan2 etaBar rhoBar
 
 -- Jarlskog invariant

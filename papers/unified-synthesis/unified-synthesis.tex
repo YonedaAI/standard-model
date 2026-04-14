@@ -175,11 +175,11 @@ The requirement that all gauge anomalies cancel---proven in Part~I and Part~III-
 The four anomaly cancellation conditions of the Standard Model
 \begin{align}
 [\su{3}]^2\uu{1}_Y &: \quad 2 \times \tfrac{1}{6} - \tfrac{2}{3} + \tfrac{1}{3} = 0 \label{eq:anom1}\\
-[\su{2}]^2\uu{1}_Y &: \quad 3 \times \tfrac{1}{6} - \tfrac{1}{2} = 0 \label{eq:anom2}\\
-[\uu{1}_Y]^3 &: \quad 6(\tfrac{1}{6})^3 + 3(-\tfrac{2}{3})^3 + 3(\tfrac{1}{3})^3 + 2(-\tfrac{1}{2})^3 + (-1)^3 = 0 \label{eq:anom3}\\
-[\mathrm{grav}]^2\uu{1}_Y &: \quad 6 \times \tfrac{1}{6} + 3(-\tfrac{2}{3}) + 3 \times \tfrac{1}{3} + 2(-\tfrac{1}{2}) + (-1) = 0 \label{eq:anom4}
+[\su{2}]^2\uu{1}_Y &: \quad N_c \times \tfrac{1}{6} - \tfrac{1}{2} = 0 \label{eq:anom2}\\
+[\uu{1}_Y]^3 &: \quad 2N_c(\tfrac{1}{6})^3 + N_c(-\tfrac{2}{3})^3 + N_c(\tfrac{1}{3})^3 + 2(-\tfrac{1}{2})^3 + (-1)^3 = 0 \label{eq:anom3}\\
+[\mathrm{grav}]^2\uu{1}_Y &: \quad 2N_c \times \tfrac{1}{6} + N_c(-\tfrac{2}{3}) + N_c \times \tfrac{1}{3} + 2(-\tfrac{1}{2}) + (-1) = 0 \label{eq:anom4}
 \end{align}
-require the simultaneous presence of both quarks (with $N_c = 3$ colors) and leptons in each generation. This is a cross-module constraint: the strong sector ($\su{3}_C$) and the electroweak sector ($\su{2}_L \times \uu{1}_Y$) are not independent modules but are linked by the consistency of the quantum theory.
+where $N_c$ denotes the number of colors; setting $N_c = 3$ yields the cancellation. These conditions require the simultaneous presence of both quarks (with $N_c = 3$ colors) and leptons in each generation. This is a cross-module constraint: the strong sector ($\su{3}_C$) and the electroweak sector ($\su{2}_L \times \uu{1}_Y$) are not independent modules but are linked by the consistency of the quantum theory.
 \end{theorem}
 
 This result, proven in detail in Parts~I and~III, has a profound implication: the matter module cannot be specified independently of the gauge module. The representation content of the fermions is constrained by the requirement that the gauge symmetry be anomaly-free at the quantum level. This is the strongest evidence that the Standard Model is a genuinely compositional theory, not merely a collection of independent parts.
@@ -200,7 +200,7 @@ The three-generation structure of the Standard Model appears in all three papers
 \label{thm:three-gen-necessity}
 The modular composition of the Standard Model requires at least three generations to produce the following emergent properties simultaneously:
 \begin{enumerate}
-\item CP violation in the quark sector (Jarlskog invariant $J \approx 3.08 \times 10^{-5}$),
+\item CP violation in the quark sector (Jarlskog invariant $J = (3.00 \pm 0.15) \times 10^{-5}$),
 \item A mechanism (though quantitatively insufficient) for baryogenesis via the Sakharov conditions,
 \item Asymptotic freedom of QCD ($b_0 = 11 - 2N_f/3 > 0$ requires $N_f < 17$; three generations give $N_f = 6$, yielding $b_0 = 7$),
 \item Consistency with the $Z$ boson invisible width ($N_\nu = 2.9840 \pm 0.0082$).
@@ -232,7 +232,7 @@ The most consequential cross-cutting result from the three papers is that the St
 \label{prop:baryogenesis-failure}
 The Standard Model fails to produce the observed baryon asymmetry for two independent reasons:
 \begin{enumerate}
-\item \textbf{Insufficient CP violation} (Part~II): The CKM Jarlskog invariant $J \approx 3 \times 10^{-5}$, combined with quark-mass suppression factors, yields an effective baryon asymmetry $\eta_{\mathrm{SM}} \lesssim 10^{-20}$, ten orders of magnitude below observation.
+\item \textbf{Insufficient CP violation} (Part~II): The CKM Jarlskog invariant $J = (3.00 \pm 0.15) \times 10^{-5}$, combined with quark-mass suppression factors, yields an effective baryon asymmetry $\eta_{\mathrm{SM}} \lesssim 10^{-20}$, ten orders of magnitude below observation.
 \item \textbf{No first-order electroweak phase transition} (Part~III): The electroweak transition for $m_H \approx 125\GeV$ is a smooth crossover, not providing the departure from thermal equilibrium required by Sakharov's third condition.
 \end{enumerate}
 This failure is the strongest evidence for physics beyond the Standard Model and points directly toward new CP-violating sectors, extended scalar potentials, or leptogenesis mechanisms.
@@ -403,7 +403,7 @@ No single module produces CP violation; it is a genuinely compositional phenomen
 
 The Jarlskog invariant $J$, which is the unique rephasing-invariant measure of CP violation, encodes this compositional origin:
 \begin{equation}
-J = c_{12}c_{23}c_{13}^2 s_{12}s_{23}s_{13}\sin\delta \approx 3.08 \times 10^{-5}
+J = c_{12}c_{23}c_{13}^2 s_{12}s_{23}s_{13}\sin\delta = (3.00 \pm 0.15) \times 10^{-5}
 \end{equation}
 $J$ vanishes if any mixing angle is 0 or $\pi/2$ (which would indicate alignment of the Yukawa matrices, eliminating the cross-module mismatch) or if $\delta = 0$ or $\pi$ (eliminating the complex phase).
 
@@ -685,7 +685,7 @@ The open problems of the Standard Model, when viewed through the unified synthes
 \begin{definition}[Hierarchy Problem --- Parts~I, III]
 The Higgs mass receives quadratically divergent radiative corrections:
 \begin{equation}
-\delta m_H^2 \sim \frac{\Lambda^2}{16\pi^2}\left(6\lambda + 6y_t^2 - \frac{9}{4}g^2 - \frac{3}{4}g'^2\right)
+\delta m_H^2 \sim \frac{\Lambda^2}{16\pi^2}\left(6\lambda - 6y_t^2 + \frac{9}{4}g^2 + \frac{3}{4}g'^2\right)
 \end{equation}
 If $\Lambda = \Mpl$, then $\delta m_H^2 \sim (10^{18}\GeV)^2$, requiring cancellation to $\sim 34$ decimal places to yield $m_H \approx 125\GeV$.
 \end{definition}
@@ -801,19 +801,19 @@ From the modular framework perspective, the central challenge is not merely to q
 
 We now state the main formal results of the unified synthesis.
 
-\begin{theorem}[Grand Compositional Theorem of the Standard Model]
+\begin{proposition}[Grand Compositional Theorem of the Standard Model]
 \label{thm:grand-composition}
 The Standard Model of particle physics is a modular composition of three sectors---gauge, matter (including anti-matter), and Higgs---connected by four compositional interfaces (covariant derivative, Higgs--gauge coupling, Yukawa couplings, CKM mixing). The composition produces the following emergent properties not present in any individual sector:
 \begin{enumerate}
 \item \textbf{Mass generation}: $m_W, m_Z, m_H$ from Higgs--gauge composition; $m_f = y_f v/\sqrt{2}$ from matter--Higgs composition; $m_p \approx 938\MeV$ (99\% from QCD dynamics) from gauge--matter composition.
 \item \textbf{Asymptotic freedom}: From $\su{3}_C$ gauge--matter composition with $b_0 = 11 - 2N_f/3 > 0$.
-\item \textbf{Confinement}: From the same composition at long distances, producing color-singlet hadrons.
-\item \textbf{CP violation}: From three-generation matter composition with Higgs Yukawa couplings, producing the CKM phase $\delta$ and Jarlskog invariant $J \approx 3 \times 10^{-5}$.
+\item \textbf{Confinement}: From the same composition at long distances, producing color-singlet hadrons. (Confinement is strongly supported by lattice QCD simulations and phenomenological evidence, but an analytic proof from first principles remains an open problem (cf.\ the Clay Millennium Prize).)
+\item \textbf{CP violation}: From three-generation matter composition with Higgs Yukawa couplings, producing the CKM phase $\delta$ and Jarlskog invariant $J = (3.00 \pm 0.15) \times 10^{-5}$.
 \item \textbf{Anomaly cancellation}: From the specific representation assignment of quarks and leptons under $G_{\mathrm{SM}}$, requiring $N_c = 3$ colors.
 \item \textbf{Anti-matter}: From the composition of quantum mechanics with Lorentz invariance in the Dirac equation.
 \item \textbf{CPT invariance}: From the composition of Lorentz invariance, locality, and unitarity.
 \end{enumerate}
-\end{theorem}
+\end{proposition}
 
 \begin{theorem}[Hierarchical Law Composition for the Standard Model]
 \label{thm:hierarchical-law}
@@ -839,7 +839,7 @@ The three companion papers are not merely different perspectives on the same the
 \item \textbf{Part~II requires Part~III}: Baryogenesis requires the electroweak phase transition dynamics and sphaleron processes, which are properties of the gauge--Higgs composition.
 \item \textbf{Part~III requires Part~I}: Anomaly cancellation requires the specific matter content of Part~I; the gauge module alone is not consistent.
 \item \textbf{Part~I requires Part~III}: The mass spectrum of matter requires the Higgs mechanism and spontaneous symmetry breaking.
-\item \textbf{Part~III requires Part~II}: The CKM matrix, unitarity triangles, and CP violation measurements are essential experimental tests of the compositional structure.
+\item \textbf{Part~III requires Part~II}: Part~III's CKM matrix parameters are determined experimentally through CP violation measurements analyzed in Part~II, establishing a \emph{phenomenological} (rather than formal) dependency.
 \end{enumerate}
 \end{theorem}
 
