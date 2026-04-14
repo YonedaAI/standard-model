@@ -1,6 +1,14 @@
 import katex from "katex";
 
 /**
+ * Replace LaTeX commands not supported by KaTeX with equivalents.
+ * \slashed{D} -> \not{D} (Feynman slash notation)
+ */
+function preprocessTex(tex: string): string {
+  return tex.replace(/\\slashed\{([^}]+)\}/g, "\\not{$1}");
+}
+
+/**
  * Pre-renders LaTeX math in HTML content using KaTeX.
  * Handles:
  *   - Display math: <div class="katex-display">$$...$$</div>
@@ -13,7 +21,7 @@ export function renderMathInHtml(html: string): string {
     /<div class="katex-display">\s*\$\$([\s\S]*?)\$\$\s*<\/div>/g,
     (_match, tex: string) => {
       try {
-        const rendered = katex.renderToString(tex.trim(), {
+        const rendered = katex.renderToString(preprocessTex(tex.trim()), {
           displayMode: true,
           throwOnError: false,
           trust: true,
@@ -30,7 +38,7 @@ export function renderMathInHtml(html: string): string {
     /<span class="math-inline">([\s\S]*?)<\/span>/g,
     (_match, tex: string) => {
       try {
-        const rendered = katex.renderToString(tex.trim(), {
+        const rendered = katex.renderToString(preprocessTex(tex.trim()), {
           displayMode: false,
           throwOnError: false,
           trust: true,
@@ -47,7 +55,7 @@ export function renderMathInHtml(html: string): string {
     /<span class="katex-inline">([\s\S]*?)<\/span>/g,
     (_match, tex: string) => {
       try {
-        const rendered = katex.renderToString(tex.trim(), {
+        const rendered = katex.renderToString(preprocessTex(tex.trim()), {
           displayMode: false,
           throwOnError: false,
           trust: true,
